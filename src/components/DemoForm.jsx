@@ -156,6 +156,7 @@ export default function DemoForm({ open, onClose }) {
                   {submitError}
                 </div>
               )}
+              <div className="demo-form__fields">
               <label className="demo-form__label">
                  <span className="demo-form__required">Name*</span>
                 <input
@@ -201,11 +202,12 @@ export default function DemoForm({ open, onClose }) {
                   value={formData.message}
                   onChange={handleChange}
                   rows={3}
-                  className="demo-form__input demo-form__textarea"
+                  className="demo-form__input demo-form__textarea demo-form__textarea--mobile"
                   placeholder="What are you looking to achieve with VR training?"
                   required
                 />
               </label>
+              </div>
               <div className="demo-form__actions">
                 <button type="button" className="btn btn-secondary" onClick={onClose} disabled={submitting}>
                   Cancel
@@ -232,14 +234,46 @@ export default function DemoForm({ open, onClose }) {
         }
         @media (max-width: 480px) {
           .demo-form__backdrop {
-            align-items: flex-start;
-            padding: 0 var(--space-sm) var(--space-sm);
-            padding-top: 0.25rem;
-            overflow-y: auto;
+            align-items: center;
+            padding: var(--space-sm);
+            overflow: hidden;
           }
           .demo-form__modal {
-            max-height: min(calc(100vh - 0.5rem - var(--space-sm)), calc(100dvh - 2rem));
-            margin: auto 0;
+            max-height: calc(100vh - var(--space-md));
+            max-height: calc(100dvh - var(--space-md));
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: var(--space-md);
+            margin-bottom: var(--space-md);
+          }
+          .demo-form__title { font-size: var(--text-h3); margin-bottom: 0; }
+          .demo-form__subtitle { margin-bottom: var(--space-md); }
+          .demo-form__form {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+          }
+          .demo-form__fields {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+          }
+          .demo-form__input { padding: 0.5rem 0.75rem; font-size: 0.9375rem; }
+          .demo-form__textarea--mobile { min-height: 56px; resize: none; }
+          .demo-form__actions {
+            flex-wrap: nowrap;
+            gap: var(--space-sm);
+            margin-top: var(--space-xs);
+          }
+          .demo-form__actions .btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
           }
         }
         @keyframes demoFormFadeIn {
@@ -308,6 +342,7 @@ export default function DemoForm({ open, onClose }) {
           font-size: var(--text-small);
         }
         .demo-form__form { display: flex; flex-direction: column; gap: var(--space-lg); }
+        .demo-form__fields { display: contents; }
         .demo-form__label {
           display: flex;
           flex-direction: column;
