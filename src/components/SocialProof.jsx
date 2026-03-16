@@ -46,6 +46,12 @@ export default function SocialProof() {
           align-items: center;
           gap: var(--space-2xl);
         }
+        @media (max-width: 767px) {
+          .social-proof__list {
+            flex-direction: column;
+            flex-wrap: nowrap;
+          }
+        }
         .social-proof__item {
           display: flex;
           flex-direction: column;

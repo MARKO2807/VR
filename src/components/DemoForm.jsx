@@ -230,6 +230,18 @@ export default function DemoForm({ open, onClose }) {
           padding: var(--space-lg);
           animation: demoFormFadeIn 0.2s ease;
         }
+        @media (max-width: 480px) {
+          .demo-form__backdrop {
+            align-items: flex-start;
+            padding: 0 var(--space-sm) var(--space-sm);
+            padding-top: 0.25rem;
+            overflow-y: auto;
+          }
+          .demo-form__modal {
+            max-height: min(calc(100vh - 0.5rem - var(--space-sm)), calc(100dvh - 2rem));
+            margin: auto 0;
+          }
+        }
         @keyframes demoFormFadeIn {
           from { opacity: 0; }
           to { opacity: 1; }

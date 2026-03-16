@@ -123,6 +123,9 @@ export default function About() {
             margin-inline: auto;
           }
         }
+        @media (max-width: 480px) {
+          .about__col--side { max-width: 260px; }
+        }
       `}</style>
     </section>
   );

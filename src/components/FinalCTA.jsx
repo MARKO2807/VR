@@ -64,6 +64,12 @@ export default function FinalCTA({ onRequestDemo }) {
           color: var(--text-muted);
           font-size: var(--text-small);
         }
+        @media (max-width: 480px) {
+          .final-cta .final-cta__btn {
+            padding: 0.6rem 1.1rem;
+            font-size: 0.9rem;
+          }
+        }
       `}</style>
     </section>
   );

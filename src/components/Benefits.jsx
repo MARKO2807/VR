@@ -40,10 +40,16 @@ export default function Benefits() {
           gap: var(--space-lg);
         }
         @media (min-width: 720px) {
+          .benefits .container {
+            text-align: center;
+          }
+          .benefits__intro {
+            margin-inline: auto;
+          }
           .benefits__grid {
             grid-template-columns: 1fr;
             max-width: 50%;
-            margin-right: auto;
+            margin-inline: auto;
           }
         }
         .benefits__card {

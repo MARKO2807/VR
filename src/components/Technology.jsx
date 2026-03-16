@@ -92,6 +92,9 @@ export default function Technology() {
           .technology__visual { order: -1; max-width: 320px; margin-inline: auto; }
           .technology__frame { margin-inline: auto; }
         }
+        @media (max-width: 480px) {
+          .technology__visual { max-width: 260px; }
+        }
       `}</style>
     </section>
   );

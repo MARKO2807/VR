@@ -18,20 +18,7 @@ const applications = [
     ],
     closing: 'These simulations allow trainees to gain practical knowledge and experience without the risks associated with real-world training conditions.',
   },
-  {
-    title: 'VR Training Hubs for Nautical Education',
-    image: '/Nautical.jpg',
-    imageAlt: 'VR training hub and immersive learning space',
-    intro: 'Horvat Innovative Labs supports the development of independent VR training hubs dedicated to nautical education and immersive training programs. These hubs serve as specialized facilities where trainees can participate in structured VR training courses supported by instructors and advanced simulation systems.',
-    items: [
-      'Multiple VR simulation stations',
-      'Instructor monitoring systems',
-      'Structured training programs',
-      'Educational workshops and seminars',
-      'Professional certification preparation',
-    ],
-    closing: 'VR hubs allow training organizations to increase training capacity and provide consistent high-quality training experiences.',
-  },
+ 
   {
     title: 'Professional Emergency and Safety Training',
     image: '/Firefighter.jpg',
@@ -48,7 +35,7 @@ const applications = [
   },
   {
     title: 'VR Education in Schools and Universities',
-    image: '/Library2.jpg',
+    image: '/University2.jpg',
     imageAlt: 'VR education in schools and universities',
     intro: 'Educational institutions increasingly adopt immersive technologies to support modern learning methods. VR Classroom4You enables schools and universities to create interactive educational environments where students can explore concepts through experience.',
     items: [
