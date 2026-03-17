@@ -58,27 +58,30 @@ export default function VRClassroom() {
         .platform { padding: var(--section-padding-y) 0; background: var(--bg-secondary); }
         .platform__intro {
           color: var(--text-secondary);
-          margin-bottom: var(--space-md);
+          margin-bottom: var(--space-lg);
           line-height: var(--line-relaxed);
           max-width: 72ch;
         }
-        .platform__capabilities { margin-top: var(--space-2xl); }
+        .platform__capabilities { margin-top: var(--space-3xl); }
         .platform__cap-title {
           font-size: var(--text-h3);
           font-weight: 700;
           color: var(--text-primary);
-          margin-bottom: var(--space-lg);
+          margin-bottom: var(--space-xl);
         }
         .platform__list {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: var(--space-lg);
+          gap: var(--space-xl);
+        }
+        .platform__item {
+          padding: var(--space-xl);
         }
         .platform__item-title {
           font-size: 1.125rem;
           font-weight: 600;
           color: var(--accent-teal);
-          margin-bottom: var(--space-sm);
+          margin-bottom: var(--space-md);
         }
         .platform__item-text {
           font-size: var(--text-small);
@@ -86,7 +89,7 @@ export default function VRClassroom() {
           line-height: var(--line-relaxed);
         }
         .platform__deploy {
-          margin-top: var(--space-xl);
+          margin-top: var(--space-2xl);
           color: var(--text-muted);
           font-size: var(--text-small);
           font-style: italic;

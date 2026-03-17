@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import MagneticButton from './MagneticButton';
 
-
+const TILT_MAX = 8;
 
 export default function Hero({ onRequestDemo }) {
+  const frameRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onFrameMouseMove = (e) => {
+    const el = frameRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({
+      x: -y * TILT_MAX,
+      y: x * TILT_MAX,
+    });
+  };
+
+  const onFrameMouseLeave = () => setTilt({ x: 0, y: 0 });
+
   return (
     <section id="hero" className="hero" aria-labelledby="hero-heading">
+      <div className="hero__bg-mesh" aria-hidden="true" />
       <div className="container hero__container">
         <h1 id="hero-heading" className="hero__title">
           <span className="hero__title-line">
@@ -22,28 +41,58 @@ export default function Hero({ onRequestDemo }) {
               By combining immersive simulation, interactive learning systems, and modern training methodologies, VR technology allows users to practice real-world situations safely, develop practical skills faster, and experience complex environments in ways that traditional education cannot provide.
             </p>
           </div>
-          <div className="dotted-frame hero__frame">
+          <div
+            ref={frameRef}
+            className="dotted-frame hero__frame hero__frame--tilt"
+            data-cursor-pointer
+            onMouseMove={onFrameMouseMove}
+            onMouseLeave={onFrameMouseLeave}
+            style={{
+              '--tilt-x': `${tilt.x}deg`,
+              '--tilt-y': `${tilt.y}deg`,
+            }}
+          >
             <div className="hero__frame-inner">
-              <img src="/Oculus3.jpg" alt="Immersive VR experience with VR Classroom4You" className="hero__img" />
+              <img
+                src="/Oculus3.jpg"
+                alt="Immersive VR experience with VR Classroom4You"
+                className="hero__img"
+              />
             </div>
           </div>
         </div>
         <div className="hero__ctas">
-          <button type="button" className="btn btn-primary hero__cta-primary" onClick={onRequestDemo}>
+          <MagneticButton type="button" className="btn btn-primary hero__cta-primary" onClick={onRequestDemo}>
             Request a Demo
-          </button>
-          <a href="#platform" className="btn btn-secondary hero__cta-secondary">
+          </MagneticButton>
+          <MagneticButton as="a" href="#platform" className="btn btn-secondary hero__cta-secondary">
             Explore VR Classroom4You
-          </a>
+          </MagneticButton>
         </div>
       </div>
       <style>{`
         .hero {
+          position: relative;
           padding-top: calc(72px + var(--section-padding-y));
           padding-bottom: var(--section-padding-y);
           min-height: 100vh;
           display: flex;
           align-items: center;
+        }
+        .hero__bg-mesh {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background: linear-gradient(135deg, rgba(0, 201, 212, 0.04) 0%, transparent 40%, rgba(233, 30, 140, 0.04) 70%, transparent 100%);
+          background-size: 200% 200%;
+          animation: heroMesh 15s ease-in-out infinite;
+        }
+        @keyframes heroMesh {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero__bg-mesh { animation: none; }
         }
         .hero__container {
           display: flex;
@@ -74,7 +123,7 @@ export default function Hero({ onRequestDemo }) {
           -webkit-text-fill-color: transparent;
           text-fill-color: transparent;
           filter: drop-shadow(0 0 24px rgba(0, 201, 212, 0.4)) drop-shadow(0 0 48px rgba(233, 30, 140, 0.25));
-          animation: heroShimmer 6s ease-in-out infinite;
+          animation: heroShimmer 3s ease-in-out infinite;
           animation-delay: 1s;
         }
         @keyframes heroReveal {
@@ -84,8 +133,10 @@ export default function Hero({ onRequestDemo }) {
           }
         }
         @keyframes heroShimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0% { background-position: 0% 50%; }
+          33% { background-position: 100% 50%; }
+          66% { background-position: 50% 100%; }
+          100% { background-position: 0% 50%; }
         }
         @media (prefers-reduced-motion: reduce) {
           .hero__title-line {
@@ -118,11 +169,29 @@ export default function Hero({ onRequestDemo }) {
           border-radius: var(--radius-xl);
           overflow: hidden;
         }
+        .hero__frame--tilt {
+          perspective: 1000px;
+          transition: transform 0.2s ease-out;
+          cursor: pointer;
+        }
+        .hero__frame--tilt .hero__frame-inner {
+          transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+          transition: transform 0.2s ease-out;
+        }
+        @media (hover: hover) {
+          .hero__frame--tilt:hover .hero__frame-inner {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+          }
+        }
+        @media (hover: none), (prefers-reduced-motion: reduce) {
+          .hero__frame--tilt .hero__frame-inner { transform: none; }
+        }
         .hero__frame-inner {
           border-radius: var(--radius-lg);
           overflow: hidden;
           aspect-ratio: 4/3;
           background: var(--bg-card);
+          transform-style: preserve-3d;
         }
         .hero__img {
           width: 100%;

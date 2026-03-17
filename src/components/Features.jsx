@@ -1,4 +1,13 @@
 import React from 'react';
+import ScrollReveal from './ScrollReveal';
+import {
+  Glasses,
+  ClipboardList,
+  Presentation,
+  Repeat,
+  Users,
+  Network,
+} from 'lucide-react';
 
 const features = [
   {
@@ -33,53 +42,22 @@ const features = [
   },
 ];
 
+const iconMap = {
+  vr: Glasses,
+  scenario: ClipboardList,
+  instructor: Presentation,
+  repeat: Repeat,
+  collab: Users,
+  hub: Network,
+};
+
 const Icon = ({ name }) => {
-  const icons = {
-    vr: (
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 16h32v20H8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M16 36v4M32 36v4" stroke="currentColor" strokeWidth="2"/>
-        <circle cx="18" cy="26" r="3" stroke="currentColor" strokeWidth="2"/>
-        <circle cx="30" cy="26" r="3" stroke="currentColor" strokeWidth="2"/>
-      </svg>
-    ),
-    scenario: (
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="10" width="36" height="28" rx="2" stroke="currentColor" strokeWidth="2"/>
-        <path d="M6 18h36M14 24h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    ),
-    instructor: (
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="24" cy="14" r="6" stroke="currentColor" strokeWidth="2"/>
-        <path d="M12 38c0-6.6 5.4-12 12-12s12 5.4 12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M32 22l8 4v8l-8 4" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-      </svg>
-    ),
-    repeat: (
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M38 12L44 18l-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M10 36L4 30l6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M44 18a18 18 0 01-26 16.2M4 30a18 18 0 0126-16.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    ),
-    collab: (
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="18" cy="16" r="5" stroke="currentColor" strokeWidth="2"/>
-        <circle cx="30" cy="16" r="5" stroke="currentColor" strokeWidth="2"/>
-        <path d="M12 38c0-4 2.5-8 6-10M36 38c0-4-2.5-8-6-10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M24 28v10M20 34h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    ),
-    hub: (
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" strokeWidth="2"/>
-        <path d="M24 16v16M16 24h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <circle cx="24" cy="24" r="4" stroke="currentColor" strokeWidth="2"/>
-      </svg>
-    ),
-  };
-  return <span className="features__icon">{icons[name] || icons.vr}</span>;
+  const LucideIcon = iconMap[name] ?? iconMap.vr;
+  return (
+    <span className="features__icon" aria-hidden>
+      <LucideIcon size={44} strokeWidth={1.75} />
+    </span>
+  );
 };
 
 export default function Features() {
@@ -91,8 +69,8 @@ export default function Features() {
           In which areas we develop VR
         </h2>
         <ul className="features__grid" role="list">
-          {features.map((f) => (
-            <li key={f.title}>
+          {features.map((f, i) => (
+            <ScrollReveal key={f.title} as="li" delay={i * 70}>
               <article className="card features__card">
                 <Icon name={f.icon} />
                 <h3 className="features__card-title">{f.title}</h3>
@@ -101,7 +79,7 @@ export default function Features() {
                   Read more →
                 </a>
               </article>
-            </li>
+            </ScrollReveal>
           ))}
         </ul>
       </div>
@@ -119,8 +97,8 @@ export default function Features() {
           align-items: flex-start;
         }
         .features__icon {
-          width: 56px;
-          height: 56px;
+          width: 44px;
+          height: 44px;
           color: var(--accent-teal);
           margin-bottom: var(--space-lg);
           display: block;

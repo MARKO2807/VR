@@ -73,7 +73,7 @@ export default function TrainingHubs({ onRequestDemo }) {
         .hubs__card-cta {
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: space-evenly;
         }
         .hubs__cta-text {
           color: var(--text-secondary);

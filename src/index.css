@@ -6,8 +6,8 @@
   --bg-card: #161e2e;
   --bg-card-hover: #1c2638;
   --text-primary: #ffffff;
-  --text-secondary: #a8b8cc;
-  --text-muted: #8b9baa;
+  --text-secondary: #bcc8d8;
+  --text-muted: #9cadbc;
   --accent-teal: #00c9d4;
   --accent-teal-hover: #00e5f0;
   --accent-magenta: #e91e8c;
@@ -72,6 +72,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+#main {
+  position: relative;
+  z-index: 1;
 }
 
 img {
@@ -183,7 +188,8 @@ ul, ol {
 
 .card:hover {
   background: var(--bg-card-hover);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card), 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 201, 212, 0.06);
+  transform: translateY(-4px);
 }
 
 /* Dotted outline (hero / image frames) */
@@ -207,12 +213,14 @@ ul, ol {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   background-size: 200% 200%;
-  animation: gradientShift 8s ease infinite;
+  animation: gradientShift 3s ease-in-out infinite;
 }
 
 @keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0% { background-position: 0% 50%; }
+  33% { background-position: 100% 50%; }
+  66% { background-position: 50% 100%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Reduced motion */

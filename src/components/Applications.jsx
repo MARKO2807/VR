@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollReveal from './ScrollReveal';
 
 const applications = [
   {
@@ -73,8 +74,8 @@ export default function Applications() {
           Immersive technologies can transform how organizations train professionals, educate students, and present experiences. VR Classroom4You supports a wide range of applications.
         </p>
         <ul className="applications__list" role="list">
-          {applications.map((app) => (
-            <li key={app.title} className="applications__card card">
+          {applications.map((app, i) => (
+            <ScrollReveal key={app.title} as="li" delay={i * 80} className="applications__card card">
               <div className="applications__card-body">
                 <h3 className="applications__card-title">{app.title}</h3>
                 <p className="applications__card-intro">{app.intro}</p>
@@ -101,7 +102,7 @@ export default function Applications() {
                   </div>
                 </div>
               )}
-            </li>
+            </ScrollReveal>
           ))}
         </ul>
       </div>

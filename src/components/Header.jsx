@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MagneticButton from './MagneticButton';
 
 const navLinks = [
   { label: 'Home', href: '#hero' },
@@ -78,16 +79,16 @@ export default function Header({ onRequestDemo }) {
               </li>
             ))}
             <li className="header__cta-wrap">
-              <button type="button" className="btn btn-primary header__cta header__cta--mobile" onClick={() => { closeMenu(); onRequestDemo?.(); }}>
+              <MagneticButton type="button" className="btn btn-primary header__cta header__cta--mobile" onClick={() => { closeMenu(); onRequestDemo?.(); }}>
                 Request a Demo
-              </button>
+              </MagneticButton>
             </li>
           </ul>
         </nav>
 
-        <button type="button" className="btn btn-primary header__cta header__cta--desktop" onClick={() => { closeMenu(); onRequestDemo?.(); }}>
+        <MagneticButton type="button" className="btn btn-primary header__cta header__cta--desktop" onClick={() => { closeMenu(); onRequestDemo?.(); }}>
           Request a Demo
-        </button>
+        </MagneticButton>
       </div>
       <style>{`
         .header {
@@ -138,7 +139,7 @@ export default function Header({ onRequestDemo }) {
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: gradientShift 8s ease infinite;
+          animation: gradientShift 3s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .header__logo-text { animation: none; }

@@ -1,4 +1,5 @@
 import React from 'react';
+import MagneticButton from './MagneticButton';
 
 export default function FinalCTA({ onRequestDemo }) {
   return (
@@ -14,9 +15,9 @@ export default function FinalCTA({ onRequestDemo }) {
               Virtual Reality is transforming how organizations educate, train, and communicate. Whether applied to maritime training, emergency services preparation, academic education, or immersive digital experiences, VR Classroom4You provides powerful tools for modern organizations.
             </p>
             <div className="final-cta__buttons">
-              <button type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo}>
+              <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo}>
                 Request a Demo
-              </button>
+              </MagneticButton>
               <span className="final-cta__or">or</span>
               <a href="mailto:contact@horvatlabs.com" className="btn btn-secondary final-cta__btn">
                 Contact Horvat Innovative Labs
@@ -27,13 +28,13 @@ export default function FinalCTA({ onRequestDemo }) {
       </div>
       <style>{`
         .final-cta__wrap {
-          padding: clamp(4rem, 10vw, 5rem) var(--section-padding-x);
+          padding: clamp(4.5rem, 11vw, 6rem) var(--section-padding-x);
           background: var(--bg-primary);
         }
         .final-cta__card {
           max-width: 800px;
           margin-inline: auto;
-          padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 2.5rem);
+          padding: clamp(3rem, 7vw, 4.5rem) clamp(2rem, 4.5vw, 3rem);
           text-align: center;
           background: var(--bg-card);
           border-radius: var(--radius-xl);

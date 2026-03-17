@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ScrollReveal from './ScrollReveal';
 
 const faqs = [
   {
@@ -20,6 +21,18 @@ const faqs = [
   {
     question: 'How do I get started?',
     answer: 'Request a demo to see VR Classroom4You in action and discuss how it can be tailored to your organization. You can also explore the platform section on this page to understand capabilities and areas of application.',
+  },
+  {
+    question: 'What hardware or equipment is required?',
+    answer: 'Typical setups include VR headsets, compatible PCs or standalone devices, and optional peripherals depending on the training scenario. Requirements can be tailored to your budget and use case—contact us for a detailed recommendation.',
+  },
+  {
+    question: 'Can VR training content be customized for our industry?',
+    answer: 'Yes. We can develop or adapt scenarios for maritime, safety, healthcare, manufacturing, and other sectors. Custom content ensures that training reflects your procedures, equipment, and regulatory context.',
+  },
+  {
+    question: 'Is there a minimum number of users or sessions?',
+    answer: 'Pricing and deployment options vary by organization size and goals. Whether you need a single hub or a network of training centers, we can propose a plan that fits your scale and timeline.',
   },
 ];
 
@@ -65,19 +78,27 @@ export default function FAQ() {
         </h2>
         <ul className="faq__list" role="list">
           {faqs.map((item, i) => (
-            <li key={item.question}>
+            <ScrollReveal key={item.question} as="li" delay={i * 60}>
               <AccordionItem
                 item={item}
                 isOpen={openId === i}
                 onToggle={() => setOpenId(openId === i ? -1 : i)}
               />
-            </li>
+            </ScrollReveal>
           ))}
         </ul>
       </div>
       <style>{`
-        .faq { padding: var(--section-padding-y) 0; background: var(--bg-secondary);padding-bottom: 0; }
-        .faq__list { display: flex; flex-direction: column; gap: var(--space-md); }
+        .faq {
+          padding: var(--section-padding-y) 0 var(--space-2xl);
+          background: var(--bg-secondary);
+        }
+        .faq__list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-md);
+          padding: var(--space-sm) 0;
+        }
         .faq__item { padding: 0; overflow: hidden; }
         .faq__question {
           width: 100%;

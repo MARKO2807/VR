@@ -64,7 +64,7 @@ export default function Footer({ onRequestDemo }) {
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: gradientShift 8s ease infinite;
+          animation: gradientShift 3s ease-in-out infinite;
         }
         @media (prefers-reduced-motion: reduce) {
           .footer__logo-text { animation: none; }

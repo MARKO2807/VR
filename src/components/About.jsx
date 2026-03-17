@@ -1,8 +1,22 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 
-
+const TILT_MAX = 8;
 
 export default function About() {
+  const frameRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onFrameMouseMove = (e) => {
+    const el = frameRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: -y * TILT_MAX, y: x * TILT_MAX });
+  };
+
+  const onFrameMouseLeave = () => setTilt({ x: 0, y: 0 });
+
   return (
     <section id="about" className="about" aria-labelledby="about-heading">
       <div className="container about__container">
@@ -31,7 +45,14 @@ export default function About() {
             </p>
           </div>
           <div className="about__col about__col--side">
-            <div className="dotted-frame about__frame">
+            <div
+              ref={frameRef}
+              className="dotted-frame about__frame about__frame--tilt"
+              data-cursor-pointer
+              onMouseMove={onFrameMouseMove}
+              onMouseLeave={onFrameMouseLeave}
+              style={{ '--tilt-x': `${tilt.x}deg`, '--tilt-y': `${tilt.y}deg` }}
+            >
               <div className="about__frame-inner">
                 <img src="/Futuristic room.jpg" alt="Futuristic room" className="about__img" loading="lazy" decoding="async" />
               </div>
@@ -72,6 +93,20 @@ export default function About() {
           width: 100%;
           border-radius: var(--radius-xl);
           overflow: hidden;
+        }
+        .about__frame--tilt { perspective: 1000px; cursor: pointer; }
+        .about__frame--tilt .about__frame-inner {
+          transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+          transform-style: preserve-3d;
+          transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        @media (hover: hover) {
+          .about__frame--tilt:hover .about__frame-inner {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+          }
+        }
+        @media (hover: none), (prefers-reduced-motion: reduce) {
+          .about__frame--tilt .about__frame-inner { transform: none; }
         }
         .about__frame-inner {
           border-radius: var(--radius-lg);

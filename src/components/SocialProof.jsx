@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollReveal from './ScrollReveal';
 import { Building2, Globe, ShieldCheck, Users } from 'lucide-react';
 
 const partners = [
@@ -14,20 +15,20 @@ export default function SocialProof() {
       <div className="container">
         <p className="social-proof__intro">Trusted by teams across sectors</p>
         <ul className="social-proof__list" role="list">
-          {partners.map((p) => {
+          {partners.map((p, i) => {
             const Icon = p.icon;
             return (
-              <li key={p.id} className="social-proof__item">
+              <ScrollReveal key={p.id} as="li" delay={i * 80} className="social-proof__item">
                 <Icon className="social-proof__icon" size={48} aria-hidden="true" />
                 <span className="social-proof__name">{p.name}</span>
-              </li>
+              </ScrollReveal>
             );
           })}
         </ul>
       </div>
       <style>{`
         .social-proof {
-          padding: var(--space-2xl) 0;
+          padding: var(--section-padding-y) 0;
           border-top: 1px solid rgba(255,255,255,0.06);
           border-bottom: 1px solid rgba(255,255,255,0.06);
         }
@@ -35,7 +36,7 @@ export default function SocialProof() {
           text-align: center;
           font-size: var(--text-small);
           color: var(--text-muted);
-          margin-bottom: var(--space-lg);
+          margin-bottom: var(--space-xl);
           text-transform: uppercase;
           letter-spacing: 0.06em;
         }
@@ -44,7 +45,7 @@ export default function SocialProof() {
           flex-wrap: wrap;
           justify-content: center;
           align-items: center;
-          gap: var(--space-2xl);
+          gap: var(--space-2xl) var(--space-3xl);
         }
         @media (max-width: 767px) {
           .social-proof__list {
@@ -56,7 +57,7 @@ export default function SocialProof() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: var(--space-sm);
+          gap: var(--space-md);
           color: var(--text-secondary);
           font-size: var(--text-small);
           font-weight: 600;

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
+
+const TILT_MAX = 8;
 
 const techItems = [
   'High-fidelity 3D simulation environments',
@@ -10,6 +12,20 @@ const techItems = [
 ];
 
 export default function Technology() {
+  const frameRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onFrameMouseMove = (e) => {
+    const el = frameRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: -y * TILT_MAX, y: x * TILT_MAX });
+  };
+
+  const onFrameMouseLeave = () => setTilt({ x: 0, y: 0 });
+
   return (
     <section id="technology" className="technology" aria-labelledby="tech-heading">
       <div className="container technology__container">
@@ -34,7 +50,14 @@ export default function Technology() {
           </p>
         </div>
         <div className="technology__visual">
-          <div className="dotted-frame technology__frame">
+          <div
+            ref={frameRef}
+            className="dotted-frame technology__frame technology__frame--tilt"
+            data-cursor-pointer
+            onMouseMove={onFrameMouseMove}
+            onMouseLeave={onFrameMouseLeave}
+            style={{ '--tilt-x': `${tilt.x}deg`, '--tilt-y': `${tilt.y}deg` }}
+          >
             <div className="technology__frame-inner">
               <img src="/Technology.jpg" alt="VR Classroom4You technology and platform" className="technology__img" loading="lazy" decoding="async" />
             </div>
@@ -46,22 +69,22 @@ export default function Technology() {
         .technology__container {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: var(--space-4xl);
           align-items: center;
+          gap: var(--space-3xl);
         }
         .technology__intro {
           color: var(--text-secondary);
-          margin-bottom: var(--space-lg);
+          margin-bottom: var(--space-xl);
           line-height: var(--line-relaxed);
         }
-        .technology__list { margin-bottom: var(--space-lg); }
+        .technology__list { margin-bottom: var(--space-xl); }
         .technology__item {
           display: flex;
           align-items: center;
           gap: var(--space-md);
           color: var(--text-secondary);
           font-size: var(--text-small);
-          margin-bottom: var(--space-sm);
+          margin-bottom: var(--space-md);
         }
         .technology__dot {
           width: 6px;
@@ -71,11 +94,27 @@ export default function Technology() {
           flex-shrink: 0;
         }
         .technology__outro {
+          margin-top: var(--space-lg);
           color: var(--text-muted);
           font-size: var(--text-small);
           line-height: var(--line-relaxed);
         }
+        .technology__visual { display: flex; justify-content: center; padding: var(--space-md) 0; }
         .technology__frame { max-width: 360px; }
+        .technology__frame--tilt { perspective: 1000px; cursor: pointer; }
+        .technology__frame--tilt .technology__frame-inner {
+          transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+          transform-style: preserve-3d;
+          transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        @media (hover: hover) {
+          .technology__frame--tilt:hover .technology__frame-inner {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+          }
+        }
+        @media (hover: none), (prefers-reduced-motion: reduce) {
+          .technology__frame--tilt .technology__frame-inner { transform: none; }
+        }
         .technology__frame-inner {
           border-radius: var(--radius-lg);
           overflow: hidden;
@@ -89,7 +128,7 @@ export default function Technology() {
         }
         @media (max-width: 960px) {
           .technology__container { grid-template-columns: 1fr; }
-          .technology__visual { order: -1; max-width: 320px; margin-inline: auto; }
+          .technology__visual { order: -1; max-width: 320px; margin-inline: auto;}
           .technology__frame { margin-inline: auto; }
         }
         @media (max-width: 480px) {
