@@ -252,7 +252,7 @@ export default function DemoForm({ open, onClose }) {
           .demo-form__form {
             flex: 1;
             min-height: 0;
-            display: flex;
+            display: flex; 
             flex-direction: column;
             gap: var(--space-sm);
           }
