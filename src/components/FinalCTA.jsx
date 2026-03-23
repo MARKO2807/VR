@@ -15,11 +15,14 @@ export default function FinalCTA({ onRequestDemo }) {
               Virtual Reality is transforming how organizations educate, train, and communicate. Whether applied to maritime training, emergency services preparation, academic education, or immersive digital experiences, VR Classroom4You provides powerful tools for modern organizations.
             </p>
             <div className="final-cta__buttons">
-              <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo}>
-                Request a Demo
-              </MagneticButton>
+              <div className="final-cta__primary-wrap">
+                <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo} title="Free, no commitment">
+                  Request a Demo
+                </MagneticButton>
+                <span className="final-cta__hint">Free, no commitment</span>
+              </div>
               <span className="final-cta__or">or</span>
-              <a href="mailto:contact@horvatlabs.com" className="btn btn-secondary final-cta__btn">
+              <a href="mailto:contact@horvatlabs.com" className="btn btn-secondary final-cta__btn final-cta__btn--nowrap">
                 Contact Horvat Innovative Labs
               </a>
             </div>
@@ -61,9 +64,22 @@ export default function FinalCTA({ onRequestDemo }) {
           justify-content: center;
           gap: var(--space-md);
         }
+        .final-cta__primary-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+        }
+        .final-cta__hint {
+          font-size: 0.75rem;
+          color: var(--text-muted);
+        }
         .final-cta__or {
           color: var(--text-muted);
           font-size: var(--text-small);
+        }
+        .final-cta__btn--nowrap {
+          white-space: nowrap;
         }
         @media (max-width: 480px) {
           .final-cta .final-cta__btn {
