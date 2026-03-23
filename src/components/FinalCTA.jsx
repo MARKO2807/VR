@@ -19,7 +19,6 @@ export default function FinalCTA({ onRequestDemo }) {
                 <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo} title="Free, no commitment">
                   Request a Demo
                 </MagneticButton>
-                <span className="final-cta__hint">Free, no commitment</span>
               </div>
               <span className="final-cta__or">or</span>
               <a href="mailto:contact@horvatlabs.com" className="btn btn-secondary final-cta__btn final-cta__btn--nowrap">
