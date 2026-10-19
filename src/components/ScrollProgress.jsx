@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
+/** Thin progress bar at the top. Updates a scaleX transform once per frame (no re-renders). */
 export default function ScrollProgress() {
-  const [progress, setProgress] = useState(0);
+  const barRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0);
+      const progress = docHeight > 0 ? window.scrollY / docHeight : 0;
+      if (barRef.current) barRef.current.style.transform = `scaleX(${progress})`;
     };
-    onScroll();
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
 
   return (
-    <div
-      className="scroll-progress"
-      role="presentation"
-      aria-hidden="true"
-      style={{ '--scroll-progress': `${progress}%` }}
-    >
+    <div className="scroll-progress" aria-hidden="true">
+      <div ref={barRef} className="scroll-progress__bar" />
       <style>{`
         .scroll-progress {
           position: fixed;
@@ -28,20 +36,13 @@ export default function ScrollProgress() {
           right: 0;
           height: 3px;
           z-index: 999;
-          background: rgba(255,255,255,0.06);
+          pointer-events: none;
         }
-        .scroll-progress::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
+        .scroll-progress__bar {
           height: 100%;
-          width: var(--scroll-progress);
           background: linear-gradient(90deg, var(--accent-magenta), var(--accent-teal));
-          transition: width 0.1s ease-out;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .scroll-progress::after { transition: none; }
+          transform: scaleX(0);
+          transform-origin: 0 50%;
         }
       `}</style>
     </div>

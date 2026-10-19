@@ -1,26 +1,23 @@
 import React from 'react';
 import ScrollReveal from './ScrollReveal';
 import { Building2, Globe, ShieldCheck, Users } from 'lucide-react';
+import { useT } from '../i18n';
 
-const partners = [
-  { id: 1, name: 'Public Sector', icon: Building2 },
-  { id: 2, name: 'International Organizations', icon: Globe },
-  { id: 3, name: 'Compliance Teams', icon: ShieldCheck },
-  { id: 4, name: 'Research Groups', icon: Users },
-];
+const icons = [Building2, Globe, ShieldCheck, Users];
 
 export default function SocialProof() {
+  const t = useT();
   return (
-    <section className="social-proof" aria-label="Partners and applications">
+    <section className="social-proof" aria-label={t.socialProof.aria}>
       <div className="container">
-        <p className="social-proof__intro">Trusted by teams across sectors</p>
+        <p className="social-proof__intro">{t.socialProof.intro}</p>
         <ul className="social-proof__list" role="list">
-          {partners.map((p, i) => {
-            const Icon = p.icon;
+          {t.socialProof.items.map((name, i) => {
+            const Icon = icons[i];
             return (
-              <ScrollReveal key={p.id} as="li" delay={i * 80} className="social-proof__item">
-                <Icon className="social-proof__icon" size={48} aria-hidden="true" />
-                <span className="social-proof__name">{p.name}</span>
+              <ScrollReveal key={i} as="li" delay={i * 80} className="social-proof__item">
+                <Icon className="social-proof__icon" size={32} strokeWidth={1.75} aria-hidden="true" />
+                <span className="social-proof__name">{name}</span>
               </ScrollReveal>
             );
           })}
@@ -28,48 +25,38 @@ export default function SocialProof() {
       </div>
       <style>{`
         .social-proof {
-          padding: var(--section-padding-y) 0;
-          border-top: 1px solid rgba(255,255,255,0.06);
-          border-bottom: 1px solid rgba(255,255,255,0.06);
+          padding: var(--space-2xl) 0;
+          border-top: 1px solid var(--border);
+          border-bottom: 1px solid var(--border);
         }
         .social-proof__intro {
           text-align: center;
-          font-size: var(--text-small);
+          font-size: 0.8125rem;
+          font-weight: 600;
           color: var(--text-muted);
           margin-bottom: var(--space-xl);
           text-transform: uppercase;
-          letter-spacing: 0.06em;
+          letter-spacing: 0.08em;
         }
         .social-proof__list {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          align-items: center;
-          gap: var(--space-2xl) var(--space-3xl);
-        }
-        @media (max-width: 767px) {
-          .social-proof__list {
-            flex-direction: column;
-            flex-wrap: nowrap;
-          }
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: var(--space-lg);
         }
         .social-proof__item {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: var(--space-md);
+          text-align: center;
+          gap: var(--space-sm);
           color: var(--text-secondary);
           font-size: var(--text-small);
           font-weight: 600;
-          letter-spacing: 0.05em;
         }
-        .social-proof__icon {
-          width: 48px;
-          height: 48px;
-          color: var(--text-muted);
-          flex-shrink: 0;
+        .social-proof__icon { color: var(--accent-teal); flex-shrink: 0; }
+        @media (max-width: 767px) {
+          .social-proof__list { grid-template-columns: repeat(2, 1fr); gap: var(--space-xl) var(--space-md); }
         }
-        .social-proof__icon svg { width: 100%; height: 100%; }
       `}</style>
     </section>
   );

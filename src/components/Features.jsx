@@ -1,95 +1,43 @@
 import React from 'react';
 import ScrollReveal from './ScrollReveal';
-import {
-  Glasses,
-  ClipboardList,
-  Presentation,
-  Repeat,
-  Users,
-  Network,
-} from 'lucide-react';
+import { Glasses, ClipboardList, Presentation, Repeat, Users, Network } from 'lucide-react';
+import { useT } from '../i18n';
 
-const features = [
-  {
-    title: 'Immersive VR Environments',
-    description: 'Participants are placed inside realistic environments that replicate operational conditions, enabling them to practice skills in a safe and controlled setting.',
-    icon: 'vr',
-  },
-  {
-    title: 'Scenario-Based Training',
-    description: 'Training modules are built around real operational scenarios that require participants to analyze situations, make decisions, and perform procedures.',
-    icon: 'scenario',
-  },
-  {
-    title: 'Instructor-Led Sessions',
-    description: 'Training can be supervised by instructors who monitor progress, guide participants, and analyze performance.',
-    icon: 'instructor',
-  },
-  {
-    title: 'Repeatable Learning',
-    description: 'Simulations can be repeated multiple times under different conditions, allowing trainees to gradually improve their performance.',
-    icon: 'repeat',
-  },
-  {
-    title: 'Collaborative Training',
-    description: 'Multiple participants can interact within the same virtual environment, allowing teams to train together and practice communication and coordination.',
-    icon: 'collab',
-  },
-  {
-    title: 'Scalable VR Hubs',
-    description: 'Deploy in training centers, educational institutions, corporate learning environments, and dedicated VR hubs.',
-    icon: 'hub',
-  },
-];
-
-const iconMap = {
-  vr: Glasses,
-  scenario: ClipboardList,
-  instructor: Presentation,
-  repeat: Repeat,
-  collab: Users,
-  hub: Network,
-};
-
-const Icon = ({ name }) => {
-  const LucideIcon = iconMap[name] ?? iconMap.vr;
-  return (
-    <span className="features__icon" aria-hidden>
-      <LucideIcon size={44} strokeWidth={1.75} />
-    </span>
-  );
-};
+const icons = [Glasses, ClipboardList, Presentation, Repeat, Users, Network];
 
 export default function Features() {
+  const t = useT();
   return (
     <section id="features" className="features" aria-labelledby="features-heading">
       <div className="container">
-        <span className="section-label">Platform capabilities</span>
-        <h2 id="features-heading" className="section-title">
-          In which areas we develop VR
-        </h2>
+        <span className="section-label">{t.features.label}</span>
+        <h2 id="features-heading" className="section-title">{t.features.title}</h2>
         <ul className="features__grid" role="list">
-          {features.map((f, i) => (
-            <ScrollReveal key={f.title} as="li" delay={i * 70}>
-              <article className="card features__card">
-                <Icon name={f.icon} />
-                <h3 className="features__card-title">{f.title}</h3>
-                <p className="features__card-desc">{f.description}</p>
-                <a href="#platform" className="features__link">
-                  Read more →
-                </a>
-              </article>
-            </ScrollReveal>
-          ))}
+          {t.features.items.map((f, i) => {
+            const Icon = icons[i];
+            return (
+              <ScrollReveal key={i} as="li" delay={i * 70}>
+                <article className="card features__card">
+                  <span className="features__icon" aria-hidden="true">
+                    <Icon size={24} strokeWidth={1.75} />
+                  </span>
+                  <h3 className="features__card-title">{f.title}</h3>
+                  <p className="features__card-desc">{f.description}</p>
+                  <a href="#platform" className="features__link">{t.common.readMore}</a>
+                </article>
+              </ScrollReveal>
+            );
+          })}
         </ul>
       </div>
       <style>{`
         .features { padding: var(--section-padding-y) 0; }
         .features__grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-          gap: var(--space-xl);
+          grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+          gap: var(--space-lg);
         }
+        .features__grid > li { height: 100%; }
         .features__card {
           height: 100%;
           display: flex;
@@ -97,15 +45,18 @@ export default function Features() {
           align-items: flex-start;
         }
         .features__icon {
-          width: 44px;
-          height: 44px;
+          width: 48px;
+          height: 48px;
+          border-radius: var(--radius-md);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           color: var(--accent-teal);
+          background: color-mix(in srgb, var(--accent-teal) 10%, transparent);
           margin-bottom: var(--space-lg);
-          display: block;
         }
-        .features__icon svg { width: 100%; height: 100%; }
         .features__card-title {
-          font-size: var(--text-h3);
+          font-size: 1.25rem;
           font-weight: 700;
           color: var(--text-primary);
           margin-bottom: var(--space-sm);

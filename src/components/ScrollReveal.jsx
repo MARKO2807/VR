@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 
 /**
  * Wraps content and reveals it with a fade + slide-up when it scrolls into view.
- * Uses Intersection Observer; respects prefers-reduced-motion.
+ * Stops observing once revealed; respects prefers-reduced-motion via CSS.
  */
 export default function ScrollReveal({ children, className = '', delay = 0, as: Component = 'div' }) {
   const ref = useRef(null);
@@ -13,17 +13,13 @@ export default function ScrollReveal({ children, className = '', delay = 0, as: 
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-          }
-        });
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
       },
-      {
-        rootMargin: '0px 0px -60px 0px',
-        threshold: 0.1,
-      }
+      { rootMargin: '0px 0px -60px 0px', threshold: 0.1 }
     );
 
     observer.observe(el);

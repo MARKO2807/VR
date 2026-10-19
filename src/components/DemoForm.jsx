@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useT } from '../i18n';
 
 const FORM_NAME = 'demo-request';
 
 export default function DemoForm({ open, onClose }) {
+  const t = useT();
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -97,7 +99,7 @@ export default function DemoForm({ open, onClose }) {
       setSubmitted(true);
       setTimeout(() => onClose(), 2000);
     } catch {
-      setSubmitError('Something went wrong. Please check your connection and try again.');
+      setSubmitError(t.form.error);
     } finally {
       setSubmitting(false);
     }
@@ -123,20 +125,20 @@ export default function DemoForm({ open, onClose }) {
           type="button"
           className="demo-form__close"
           onClick={onClose}
-          aria-label="Close form"
+          aria-label={t.form.close}
         >
           ×
         </button>
         {submitted ? (
           <div className="demo-form__success">
             <span className="demo-form__success-icon" aria-hidden="true">✓</span>
-            <h2 id="demo-form-title" className="demo-form__success-title">Thank you</h2>
-            <p className="demo-form__success-text">We&apos;ll be in touch shortly to schedule your demo.</p>
+            <h2 id="demo-form-title" className="demo-form__success-title">{t.form.successTitle}</h2>
+            <p className="demo-form__success-text">{t.form.successText}</p>
           </div>
         ) : (
           <>
-            <h2 id="demo-form-title" className="demo-form__title">Request a Demo</h2>
-            <p className="demo-form__subtitle">Tell us a bit about yourself and we&apos;ll get back to you.</p>
+            <h2 id="demo-form-title" className="demo-form__title">{t.form.title}</h2>
+            <p className="demo-form__subtitle">{t.form.subtitle}</p>
             <form
               name={FORM_NAME}
               method="post"
@@ -148,7 +150,7 @@ export default function DemoForm({ open, onClose }) {
               <input type="hidden" name="form-name" value={FORM_NAME} />
               <p className="demo-form__hidden" aria-hidden="true">
                 <label>
-                  Don&apos;t fill this out: <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                  {t.form.honeypot} <input name="bot-field" tabIndex={-1} autoComplete="off" />
                 </label>
               </p>
               {submitError && (
@@ -158,7 +160,7 @@ export default function DemoForm({ open, onClose }) {
               )}
               <div className="demo-form__fields">
               <label className="demo-form__label">
-                 <span className="demo-form__required">Name*</span>
+                 <span className="demo-form__required">{t.form.name}</span>
                 <input
                   type="text"
                   name="name"
@@ -167,11 +169,11 @@ export default function DemoForm({ open, onClose }) {
                   required
                   autoComplete="name"
                   className="demo-form__input"
-                  placeholder="Your name"
+                  placeholder={t.form.namePlaceholder}
                 />
               </label>
               <label className="demo-form__label">
-                 <span className="demo-form__required">Email*</span>
+                 <span className="demo-form__required">{t.form.email}</span>
                 <input
                   type="email"
                   name="email"
@@ -180,11 +182,11 @@ export default function DemoForm({ open, onClose }) {
                   required
                   autoComplete="email"
                   className="demo-form__input"
-                  placeholder="you@company.com"
+                  placeholder={t.form.emailPlaceholder}
                 />
               </label>
               <label className="demo-form__label">
-                Organization
+                {t.form.organization}
                 <input
                   type="text"
                   name="organization"
@@ -192,28 +194,29 @@ export default function DemoForm({ open, onClose }) {
                   onChange={handleChange}
                   autoComplete="organization"
                   className="demo-form__input"
-                  placeholder="Company or institution"
+                  placeholder={t.form.organizationPlaceholder}
                 />
               </label>
               <label className="demo-form__label">
-                 <span className="demo-form__required">Message*</span>
+                 <span className="demo-form__required">{t.form.message}</span>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   rows={3}
                   className="demo-form__input demo-form__textarea demo-form__textarea--mobile"
-                  placeholder="What are you looking to achieve with VR training?"
+                  placeholder={t.form.messagePlaceholder}
                   required
                 />
               </label>
               </div>
+              <p className="demo-form__note">{t.form.privacyNote}</p>
               <div className="demo-form__actions">
                 <button type="button" className="btn btn-secondary" onClick={onClose} disabled={submitting}>
-                  Cancel
+                  {t.form.cancel}
                 </button>
                 <button type="submit" className="btn btn-primary" disabled={submitting}>
-                  {submitting ? 'Sending…' : 'Send request'}
+                  {submitting ? t.form.sending : t.form.send}
                 </button>
               </div>
             </form>
@@ -225,7 +228,7 @@ export default function DemoForm({ open, onClose }) {
           position: fixed;
           inset: 0;
           z-index: 1000;
-          background: rgba(0, 0, 0, 0.75);
+          background: var(--overlay);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -289,8 +292,8 @@ export default function DemoForm({ open, onClose }) {
           background: var(--bg-card);
           border-radius: var(--radius-lg);
           padding: var(--space-2xl);
-          box-shadow: var(--shadow-card);
-          border: 1px solid rgba(255,255,255,0.06);
+          box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+          border: 1px solid var(--border);
           animation: demoFormSlideIn 0.25s ease;
         }
         @keyframes demoFormSlideIn {
@@ -335,7 +338,7 @@ export default function DemoForm({ open, onClose }) {
         }
         .demo-form__error {
           padding: var(--space-md);
-          background: rgba(233, 30, 140, 0.15);
+          background: var(--accent-magenta-soft);
           border: 1px solid var(--accent-magenta);
           border-radius: var(--radius-md);
           color: var(--text-primary);
@@ -358,15 +361,16 @@ export default function DemoForm({ open, onClose }) {
           font-family: inherit;
           font-size: 1rem;
           color: var(--text-primary);
-          background: var(--bg-secondary);
-          border: 1px solid rgba(255,255,255,0.1);
+          background: var(--bg-input);
+          border: 1px solid var(--border-strong);
           border-radius: var(--radius-md);
           outline: none;
           transition: border-color var(--transition-fast);
         }
         .demo-form__input::placeholder { color: var(--text-muted); }
-        .demo-form__input:focus { border-color: var(--accent-teal); }
+        .demo-form__input:focus { border-color: var(--accent-teal); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-teal) 18%, transparent); }
         .demo-form__textarea { resize: vertical; min-height: 80px; }
+        .demo-form__note { font-size: 0.8125rem; color: var(--text-muted); }
         .demo-form__actions {
           display: flex;
           flex-wrap: wrap;
@@ -386,7 +390,7 @@ export default function DemoForm({ open, onClose }) {
           height: 56px;
           border-radius: 50%;
           background: var(--accent-teal);
-          color: var(--bg-primary);
+          color: var(--on-accent);
           display: flex;
           align-items: center;
           justify-content: center;

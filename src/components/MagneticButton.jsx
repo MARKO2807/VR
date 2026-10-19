@@ -1,53 +1,36 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
 const STRENGTH = 0.2;
 const RADIUS = 120;
 
+/** Button that leans toward the cursor. Transform is set on the element directly (no re-renders). */
 export default function MagneticButton({ children, className = '', as: Component = 'button', ...props }) {
   const ref = useRef(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const onMouseMove = (e) => {
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const dx = e.clientX - centerX;
-    const dy = e.clientY - centerY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const dist = Math.hypot(dx, dy);
     const pull = dist < RADIUS ? (1 - dist / RADIUS) * STRENGTH : 0;
-    setOffset({
-      x: dx * pull,
-      y: dy * pull,
-    });
+    el.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
   };
 
-  const onMouseLeave = () => setOffset({ x: 0, y: 0 });
+  const onMouseLeave = () => {
+    if (ref.current) ref.current.style.transform = '';
+  };
 
   return (
     <Component
       ref={ref}
       className={`magnetic-btn ${className}`.trim()}
-      style={{
-        transform: `translate(${offset.x}px, ${offset.y}px)`,
-      }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       {...props}
     >
       {children}
-      <style>{`
-        .magnetic-btn {
-          transition: transform 0.2s ease-out;
-        }
-        @media (max-width: 900px), (hover: none), (prefers-reduced-motion: reduce) {
-          .magnetic-btn {
-            transition: none;
-            transform: none !important;
-          }
-        }
-      `}</style>
     </Component>
   );
 }

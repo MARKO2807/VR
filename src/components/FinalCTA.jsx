@@ -1,90 +1,67 @@
 import React from 'react';
 import MagneticButton from './MagneticButton';
+import { useT } from '../i18n';
+import { CONTACT_EMAIL } from '../siteConfig';
 
 export default function FinalCTA({ onRequestDemo }) {
+  const t = useT();
   return (
     <section id="contact" className="final-cta" aria-labelledby="final-cta-heading">
-      <div className="final-cta__wrap">
-        <div className="container">
-          <div className="final-cta__card">
-            <span className="section-label">Get started</span>
-            <h2 id="final-cta-heading" className="final-cta__title">
-              Experience the Next Generation of Learning
-            </h2>
-            <p className="final-cta__text">
-              Virtual Reality is transforming how organizations educate, train, and communicate. Whether applied to maritime training, emergency services preparation, academic education, or immersive digital experiences, VR Classroom4You provides powerful tools for modern organizations.
-            </p>
-            <div className="final-cta__buttons">
-              <div className="final-cta__primary-wrap">
-                <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo} title="Free, no commitment">
-                  Request a Demo
-                </MagneticButton>
-              </div>
-              <span className="final-cta__or">or</span>
-              <a href="mailto:contact@horvatlabs.com" className="btn btn-secondary final-cta__btn final-cta__btn--nowrap">
-                Contact Horvat Innovative Labs
-              </a>
-            </div>
-          </div>
+      <div className="container">
+        <div className="final-cta__card">
+          <span className="section-label">{t.finalCta.label}</span>
+          <h2 id="final-cta-heading" className="final-cta__title">{t.finalCta.title}</h2>
+          <p className="final-cta__text">{t.finalCta.text}</p>
+          <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo}>
+            {t.common.requestDemo}
+          </MagneticButton>
+          <p className="final-cta__hint">{t.finalCta.hint}</p>
+          <p className="final-cta__email">
+            {t.finalCta.emailLabel} <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          </p>
         </div>
       </div>
       <style>{`
-        .final-cta__wrap {
-          padding: clamp(4.5rem, 11vw, 6rem) var(--section-padding-x);
-          background: var(--bg-primary);
-        }
+        .final-cta { padding: clamp(4rem, 10vw, 6rem) 0; }
         .final-cta__card {
-          max-width: 800px;
+          max-width: 820px;
           margin-inline: auto;
-          padding: clamp(3rem, 7vw, 4.5rem) clamp(2rem, 4.5vw, 3rem);
+          padding: clamp(2.5rem, 7vw, 4.5rem) clamp(1.25rem, 4.5vw, 3rem);
           text-align: center;
-          background: var(--bg-card);
+          background:
+            radial-gradient(ellipse 70% 60% at 50% 0%, color-mix(in srgb, var(--accent-teal-bright) 12%, transparent), transparent 70%),
+            var(--bg-card);
+          border: 1px solid var(--border);
           border-radius: var(--radius-xl);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 201, 212, 0.08);
+          box-shadow: var(--shadow-card);
         }
-        .final-cta .section-label { text-align: center; }
         .final-cta__title {
           font-size: var(--text-h1);
           font-weight: 700;
           line-height: var(--line-tight);
+          letter-spacing: -0.01em;
           color: var(--text-primary);
-          margin-bottom: var(--space-lg);
+          margin-bottom: var(--space-md);
         }
         .final-cta__text {
           color: var(--text-secondary);
-          margin-bottom: var(--space-2xl);
+          margin: 0 auto var(--space-xl);
+          max-width: 56ch;
           line-height: var(--line-relaxed);
         }
-        .final-cta__buttons {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          justify-content: center;
-          gap: var(--space-md);
-        }
-        .final-cta__primary-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 2px;
-        }
-        .final-cta__hint {
-          font-size: 0.75rem;
-          color: var(--text-muted);
-        }
-        .final-cta__or {
-          color: var(--text-muted);
+        .final-cta__btn { padding: 1rem 2.25rem; font-size: 1.0625rem; }
+        .final-cta__hint { margin-top: var(--space-sm); font-size: 0.8125rem; color: var(--text-muted); }
+        .final-cta__email {
+          margin-top: var(--space-xl);
+          padding-top: var(--space-lg);
+          border-top: 1px solid var(--border);
           font-size: var(--text-small);
+          color: var(--text-secondary);
         }
-        .final-cta__btn--nowrap {
-          white-space: nowrap;
-        }
+        .final-cta__email a { font-weight: 600; color: var(--accent-teal); word-break: break-all; }
+        .final-cta__email a:hover { text-decoration: underline; }
         @media (max-width: 480px) {
-          .final-cta .final-cta__btn {
-            padding: 0.6rem 1.1rem;
-            font-size: 0.9rem;
-          }
+          .final-cta__btn { width: 100%; }
         }
       `}</style>
     </section>

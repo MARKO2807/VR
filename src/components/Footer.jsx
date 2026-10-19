@@ -1,104 +1,123 @@
 import React from 'react';
+import { ArrowUp, Mail } from 'lucide-react';
+import Logo from './Logo';
+import { useT } from '../i18n';
+import { CONTACT_EMAIL, COMPANY } from '../siteConfig';
 
-const footerLinks = (onRequestDemo) => [
-  { label: 'Back to top', href: '#hero' },
-  { label: "FAQ's", href: '#faq' },
-  { label: 'Contact', onClick: onRequestDemo },
-  { label: 'Privacy', href: '#' },
-  { label: 'Terms', href: '#' },
-];
+const navKeys = ['about', 'platform', 'applications', 'projects', 'videos', 'faq'];
 
-export default function Footer({ onRequestDemo }) {
-  const currentYear = new Date().getFullYear();
-  const links = footerLinks(onRequestDemo);
+export default function Footer() {
+  const t = useT();
+  const year = new Date().getFullYear();
 
   return (
     <footer className="footer" role="contentinfo">
-      <div className="container footer__inner">
-        <a href="#hero" className="footer__logo">
-          <span className="footer__logo-text">Horvat Innovative Labs</span>
-        </a>
-        <p className="footer__tagline">
-          Immersive learning for organizations.
-        </p>
-        <nav className="footer__nav" aria-label="Footer">
-          <ul className="footer__links" role="list">
-            {links.map((link) => (
-              <li key={link.label}>
-                {link.href ? (
-                  <a href={link.href}>{link.label}</a>
-                ) : (
-                  <button type="button" className="footer__link-btn" onClick={link.onClick}>
-                    {link.label}
-                  </button>
-                )}
+      <div className="container">
+        <div className="footer__grid">
+          <div className="footer__brand">
+            <a href="#hero" className="footer__logo" aria-label={t.header.homeAria}><Logo /></a>
+            <p className="footer__tagline">{t.footer.tagline}</p>
+          </div>
+
+          <nav className="footer__col" aria-label={t.footer.navAria}>
+            <h2 className="footer__title">{t.footer.navTitle}</h2>
+            <ul className="footer__list footer__list--cols" role="list">
+              {navKeys.map((key) => (
+                <li key={key}><a href={`#${key}`}>{t.header.nav[key]}</a></li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="footer__col">
+            <h2 className="footer__title">{t.footer.contactTitle}</h2>
+            <ul className="footer__list" role="list">
+              <li>
+                <a href={`mailto:${CONTACT_EMAIL}`} className="footer__email">
+                  <Mail size={16} aria-hidden="true" /> {CONTACT_EMAIL}
+                </a>
               </li>
-            ))}
-          </ul>
-        </nav>
-        <p className="footer__copyright">
-          © {currentYear} Horvat Innovative Labs. All rights reserved.
-        </p>
+            </ul>
+            <h2 className="footer__title footer__title--spaced">{t.footer.legalTitle}</h2>
+            <ul className="footer__list" role="list">
+              <li><a href="#privatnost">{t.footer.privacy}</a></li>
+              <li><a href="#uvjeti">{t.footer.terms}</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="footer__bottom">
+          <p className="footer__company">
+            {t.footer.brandOf} <strong>{COMPANY.name}</strong> · OIB: {COMPANY.oib}
+            {COMPANY.address && <> · {COMPANY.address}</>}
+          </p>
+          <p className="footer__copyright">© {year} {COMPANY.name}. {t.footer.rights}</p>
+          <a href="#hero" className="footer__top">
+            <ArrowUp size={16} aria-hidden="true" /> {t.footer.backToTop}
+          </a>
+        </div>
       </div>
       <style>{`
         .footer {
-          padding: var(--space-2xl) 0;
-          background: var(--bg-primary);
-          border-top: 1px solid rgba(255,255,255,0.06);
+          padding: clamp(2.5rem, 6vw, 4rem) 0 var(--space-xl);
+          background: var(--bg-secondary);
+          border-top: 1px solid var(--border);
         }
-        .footer__inner {
-          text-align: center;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: var(--space-md);
+        .footer__grid {
+          display: grid;
+          grid-template-columns: 1.4fr 1fr 1fr;
+          gap: var(--space-2xl);
         }
-        .footer__logo {
+        .footer__logo { display: inline-flex; height: 44px; }
+        .footer__logo .logo { height: 100%; }
+        .footer__tagline { margin-top: var(--space-md); color: var(--text-secondary); font-size: var(--text-small); max-width: 32ch; }
+        .footer__title {
+          font-size: 0.75rem;
           font-weight: 700;
-          font-size: 1.125rem;
-          display: inline-block;
-        }
-        .footer__logo-text {
-          background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-magenta) 50%, var(--accent-teal) 100%);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: gradientShift 3s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .footer__logo-text { animation: none; }
-        }
-        .footer__tagline {
-          font-size: var(--text-small);
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
           color: var(--text-muted);
-          max-width: 280px;
+          margin-bottom: var(--space-md);
         }
-        .footer__links {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: var(--space-md);
-        }
-        .footer__links a,
-        .footer__link-btn {
+        .footer__title--spaced { margin-top: var(--space-xl); }
+        .footer__list { display: grid; gap: var(--space-sm); }
+        .footer__list--cols { grid-template-columns: repeat(2, max-content); column-gap: var(--space-2xl); }
+        .footer__list a {
           font-size: var(--text-small);
           color: var(--text-secondary);
-          background: none;
-          border: none;
-          cursor: pointer;
-          font-family: inherit;
-          padding: 0;
           transition: color var(--transition-fast);
         }
-        .footer__links a:hover,
-        .footer__link-btn:hover {
-          color: var(--accent-teal);
-        }
-        .footer__copyright {
+        .footer__list a:hover { color: var(--accent-teal); }
+        .footer__email { display: inline-flex; align-items: center; gap: var(--space-sm); font-weight: 600; color: var(--text-primary) !important; word-break: break-all; }
+        .footer__email:hover { color: var(--accent-teal) !important; }
+        .footer__bottom {
+          margin-top: var(--space-2xl);
+          padding-top: var(--space-lg);
+          border-top: 1px solid var(--border);
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: var(--space-sm) var(--space-xl);
           font-size: 0.8125rem;
           color: var(--text-muted);
-          margin-top: var(--space-xs);
+        }
+        .footer__company { flex-basis: 100%; color: var(--text-secondary); }
+        .footer__company strong { color: var(--text-primary); font-weight: 600; }
+        .footer__top {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 600;
+          color: var(--text-secondary);
+        }
+        .footer__top:hover { color: var(--accent-teal); }
+        @media (max-width: 860px) {
+          .footer__grid { grid-template-columns: 1fr 1fr; }
+          .footer__brand { grid-column: 1 / -1; }
+        }
+        @media (max-width: 520px) {
+          .footer__grid { grid-template-columns: 1fr; gap: var(--space-xl); }
+          .footer__logo { height: 36px; }
         }
       `}</style>
     </footer>

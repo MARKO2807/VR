@@ -5,6 +5,8 @@ import Features from './Features';
 import About from './About';
 import VRClassroom from './VRClassroom';
 import Applications from './Applications';
+import Projects from './Projects';
+import Videos from './Videos';
 import TrainingHubs from './TrainingHubs';
 import Technology from './Technology';
 import Benefits from './Benefits';
@@ -16,15 +18,17 @@ export default function PageSections({ onRequestDemo }) {
   return (
     <>
       <ScrollReveal><SocialProof /></ScrollReveal>
-      <ScrollReveal delay={60}><Features /></ScrollReveal>
-      <ScrollReveal delay={120}><About /></ScrollReveal>
-      <ScrollReveal delay={80}><VRClassroom /></ScrollReveal>
-      <ScrollReveal delay={100}><Applications /></ScrollReveal>
-      <ScrollReveal delay={60}><TrainingHubs onRequestDemo={onRequestDemo} /></ScrollReveal>
-      <ScrollReveal delay={80}><Technology /></ScrollReveal>
-      <ScrollReveal delay={100}><Benefits /></ScrollReveal>
-      <ScrollReveal delay={60}><Vision /></ScrollReveal>
-      <ScrollReveal delay={80}><FAQ /></ScrollReveal>
+      <ScrollReveal><Features /></ScrollReveal>
+      <ScrollReveal><About /></ScrollReveal>
+      <ScrollReveal><VRClassroom /></ScrollReveal>
+      <ScrollReveal><Applications /></ScrollReveal>
+      <ScrollReveal><Projects /></ScrollReveal>
+      <ScrollReveal><Videos /></ScrollReveal>
+      <ScrollReveal><TrainingHubs onRequestDemo={onRequestDemo} /></ScrollReveal>
+      <ScrollReveal><Technology /></ScrollReveal>
+      <ScrollReveal><Benefits /></ScrollReveal>
+      <ScrollReveal><Vision /></ScrollReveal>
+      <ScrollReveal><FAQ /></ScrollReveal>
       <ScrollReveal><FinalCTA onRequestDemo={onRequestDemo} /></ScrollReveal>
     </>
   );

@@ -1,43 +1,9 @@
 import React, { useState } from 'react';
 import ScrollReveal from './ScrollReveal';
+import { useT } from '../i18n';
 
-const faqs = [
-  {
-    question: 'What is VR Classroom4You?',
-    answer: 'VR Classroom4You is a Virtual Reality platform designed to support modern education, professional training, and interactive learning environments. Participants enter immersive VR environments where they can interact with virtual systems, practice procedures, and experience complex scenarios that replicate real-world conditions.',
-  },
-  {
-    question: 'Who can use VR Classroom4You?',
-    answer: 'The platform is designed for organizations, educational institutions, and professional services—including maritime training, emergency and safety training, schools and universities, and businesses that want to present products or experiences through immersive VR.',
-  },
-  {
-    question: 'What support does Horvat Innovative Labs provide for VR training hubs?',
-    answer: 'Support may include VR hardware installation, simulation software setup, instructor and operator training, development of specialized training scenarios, and system integration and technical support. Such hubs can become regional centers for maritime training, professional safety education, and immersive learning programs.',
-  },
-  {
-    question: 'Why choose immersive VR training over traditional methods?',
-    answer: 'Immersive technologies let participants learn by doing rather than only observing or memorizing. Benefits include higher engagement and motivation, improved knowledge retention, faster skill development, safe training for complex or dangerous procedures, and repeatable learning environments.',
-  },
-  {
-    question: 'How do I get started?',
-    answer: 'Request a demo to see VR Classroom4You in action and discuss how it can be tailored to your organization. You can also explore the platform section on this page to understand capabilities and areas of application.',
-  },
-  {
-    question: 'What hardware or equipment is required?',
-    answer: 'Typical setups include VR headsets, compatible PCs or standalone devices, and optional peripherals depending on the training scenario. Requirements can be tailored to your budget and use case—contact us for a detailed recommendation.',
-  },
-  {
-    question: 'Can VR training content be customized for our industry?',
-    answer: 'Yes. We can develop or adapt scenarios for maritime, safety, healthcare, manufacturing, and other sectors. Custom content ensures that training reflects your procedures, equipment, and regulatory context.',
-  },
-  {
-    question: 'Is there a minimum number of users or sessions?',
-    answer: 'Pricing and deployment options vary by organization size and goals. Whether you need a single hub or a network of training centers, we can propose a plan that fits your scale and timeline.',
-  },
-];
-
-function AccordionItem({ item, isOpen, onToggle }) {
-  const id = `faq-${item.question.slice(0, 20).replace(/\s/g, '-')}`;
+function AccordionItem({ item, index, isOpen, onToggle }) {
+  const id = `faq-${index}`;
   return (
     <div className={`faq__item card ${isOpen ? 'faq__item--open' : ''}`}>
       <button
@@ -49,7 +15,7 @@ function AccordionItem({ item, isOpen, onToggle }) {
         onClick={onToggle}
       >
         <span>{item.question}</span>
-        <span className="faq__icon" aria-hidden="true">{isOpen ? '−' : '+'}</span>
+        <span className="faq__icon" aria-hidden="true">+</span>
       </button>
       <div
         id={id}
@@ -67,20 +33,20 @@ function AccordionItem({ item, isOpen, onToggle }) {
 }
 
 export default function FAQ() {
+  const t = useT();
   const [openId, setOpenId] = useState(0);
 
   return (
     <section id="faq" className="faq" aria-labelledby="faq-heading">
-      <div className="container">
-        <span className="section-label">FAQ</span>
-        <h2 id="faq-heading" className="section-title">
-          Frequently Asked Questions
-        </h2>
+      <div className="container faq__container">
+        <span className="section-label">{t.faq.label}</span>
+        <h2 id="faq-heading" className="section-title">{t.faq.title}</h2>
         <ul className="faq__list" role="list">
-          {faqs.map((item, i) => (
-            <ScrollReveal key={item.question} as="li" delay={i * 60}>
+          {t.faq.items.map((item, i) => (
+            <ScrollReveal key={i} as="li" delay={i * 50}>
               <AccordionItem
                 item={item}
+                index={i}
                 isOpen={openId === i}
                 onToggle={() => setOpenId(openId === i ? -1 : i)}
               />
@@ -89,34 +55,27 @@ export default function FAQ() {
         </ul>
       </div>
       <style>{`
-        .faq {
-          padding: var(--section-padding-y) 0 var(--space-2xl);
-          background: var(--bg-secondary);
-        }
-        .faq__list {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-md);
-          padding: var(--space-sm) 0;
-        }
+        .faq { padding: var(--section-padding-y) 0; background: var(--bg-secondary); }
+        .faq__container { max-width: 960px; }
+        .faq__list { display: flex; flex-direction: column; gap: var(--space-sm); }
         .faq__item { padding: 0; overflow: hidden; }
+        .faq__item:hover { transform: none; }
         .faq__question {
           width: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
           gap: var(--space-md);
-          padding: var(--space-xl);
+          padding: var(--space-lg) var(--space-xl);
           text-align: left;
           font-size: 1.0625rem;
           font-weight: 600;
           color: var(--text-primary);
-          transition: background var(--transition-fast);
         }
-        .faq__question:hover { background: var(--bg-card-hover); }
         .faq__question:focus-visible { outline: 2px solid var(--accent-teal); outline-offset: -2px; }
         .faq__icon {
           font-size: 1.5rem;
+          line-height: 1;
           color: var(--accent-teal);
           flex-shrink: 0;
           transition: transform 0.25s ease;
@@ -128,23 +87,19 @@ export default function FAQ() {
           transition: grid-template-rows 0.35s ease;
         }
         .faq__answer-wrapper--open { grid-template-rows: 1fr; }
-        .faq__answer-inner {
-          min-height: 0;
-          overflow: hidden;
-        }
-        .faq__answer-wrapper .faq__answer {
-          padding: 0 var(--space-xl) var(--space-xl);
+        .faq__answer-inner { min-height: 0; overflow: hidden; }
+        .faq__answer {
+          padding: 0 var(--space-xl) var(--space-lg);
+          color: var(--text-secondary);
+          font-size: var(--text-small);
+          line-height: var(--line-relaxed);
           opacity: 0;
           transition: opacity 0.25s ease 0.05s;
         }
         .faq__answer-wrapper--open .faq__answer { opacity: 1; }
-        .faq__answer {
-          color: var(--text-secondary);
-          font-size: var(--text-small);
-          line-height: var(--line-relaxed);
-          padding-top: var(--space-sm);
-          margin: 0;
-          border-top: 1px solid rgba(255,255,255,0.06);
+        @media (max-width: 480px) {
+          .faq__question { padding: var(--space-md) var(--space-lg); font-size: 1rem; }
+          .faq__answer { padding: 0 var(--space-lg) var(--space-md); }
         }
       `}</style>
     </section>

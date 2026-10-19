@@ -1,20 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hr" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0f19" />
-    <meta name="description" content="Horvat Innovative Labs – Immersive Training and Digital Experiences with Virtual Reality. VR Classroom4You platform for education and professional training." />
-    <title>Horvat Innovative Labs | Immersive VR Training & Digital Experiences</title>
-    <link rel="canonical" href="https://horvatlabs.com/" />
+    <meta name="theme-color" content="#ffffff" />
+    <script>
+      // Apply saved theme/language before first paint (light + Croatian by default)
+      try {
+        var t = localStorage.getItem("theme");
+        if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+        var l = localStorage.getItem("lang");
+        if (l === "en" || l === "hr") document.documentElement.lang = l;
+      } catch (e) {}
+    </script>
+    <meta name="description" content="Horvat Innovative Labs – imerzivna obuka i digitalna iskustva u virtualnoj stvarnosti. Platforma VR Classroom4You za obrazovanje i stručnu obuku." />
+    <title>Horvat Innovative Labs | Imerzivna VR obuka i digitalna iskustva</title>
+    <link rel="canonical" href="https://horvatinnovativelabs.com/" />
     <link rel="icon" type="image/png" href="/svg.png" />
 
     <!-- Open Graph / social -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Horvat Innovative Labs | Immersive VR Training & Digital Experiences" />
-    <meta property="og:description" content="VR Classroom4You – Immersive training and digital experiences for education and professional training. Virtual Reality solutions for organizations and institutions." />
-    <meta property="og:url" content="https://horvatlabs.com/" />
-    <meta property="og:locale" content="en" />
+    <meta property="og:title" content="Horvat Innovative Labs | Imerzivna VR obuka i digitalna iskustva" />
+    <meta property="og:description" content="VR Classroom4You – imerzivna obuka i digitalna iskustva za obrazovanje i stručnu obuku. Rješenja virtualne stvarnosti za organizacije i ustanove." />
+    <meta property="og:url" content="https://horvatinnovativelabs.com/" />
+    <meta property="og:locale" content="hr_HR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:image" content="https://horvatinnovativelabs.com/Oculus3.jpg" />
 
     <!-- Performance: font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,8 +38,9 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Horvat Innovative Labs",
-      "url": "https://horvatlabs.com",
+      "url": "https://horvatinnovativelabs.com",
       "description": "Innovation-driven initiative dedicated to immersive technologies: VR, AR, and MR. VR Classroom4You platform for education and professional training.",
+      "email": "info@horvatinnovativelabs.com",
       "sameAs": []
     }
     </script>
