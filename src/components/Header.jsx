@@ -9,7 +9,6 @@ const navItems = [
   { key: 'platform', id: 'platform' },
   { key: 'applications', id: 'applications' },
   { key: 'projects', id: 'projects' },
-  { key: 'videos', id: 'videos' },
   { key: 'technology', id: 'technology' },
   { key: 'faq', id: 'faq' },
 ];

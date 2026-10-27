@@ -17,3 +17,6 @@ Thumbs.db
 
 # Netlify
 .netlify
+
+# Original, unprocessed photos/videos (processed copies live in public/projects)
+_source-media/

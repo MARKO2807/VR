@@ -18,7 +18,7 @@ export default function VRClassroom() {
         </div>
         <div className="dotted-frame tilt-frame platform__frame" {...tilt}>
           <div className="tilt-inner platform__frame-inner">
-            <img src="/references/nautical-classroom.jpg" alt={t.platform.imageAlt} loading="lazy" decoding="async" />
+            <img src="/projects/skipper-vr-tent.jpg" alt={t.platform.imageAlt} loading="lazy" decoding="async" />
           </div>
         </div>
       </div>

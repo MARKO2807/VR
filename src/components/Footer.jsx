@@ -4,7 +4,7 @@ import Logo from './Logo';
 import { useT } from '../i18n';
 import { CONTACT_EMAIL, COMPANY } from '../siteConfig';
 
-const navKeys = ['about', 'platform', 'applications', 'projects', 'videos', 'faq'];
+const navKeys = ['about', 'platform', 'applications', 'projects', 'technology', 'faq'];
 
 export default function Footer() {
   const t = useT();

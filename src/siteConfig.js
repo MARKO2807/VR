@@ -10,14 +10,16 @@ export const COMPANY = {
   address: 'Kutinska 4, 10000 Zagreb',
 };
 
-// Paste a full YouTube link (watch?v=…, youtu.be/…, shorts/…) or just the video ID.
-// While `youtube` is empty, the card shows "Video coming soon".
-// Order matches `videos.items` in src/i18n/hr.js and en.js.
-export const VIDEOS = [
-  { youtube: '', poster: '/references/nautical-crew.jpg' },     // Skipper4You
-  { youtube: '', poster: '/SailingBoat.jpg' },                  // Le Boat
-  { youtube: '', poster: '/references/wrc-rescue.jpg' },        // WRC 2025 / Vatrogasna zajednica
-];
+// YouTube videos shown inside each project card (section "Projekti").
+// Add as many as you like – paste full YouTube links (watch?v=…, youtu.be/…, shorts/…) or just the ID.
+// They appear as play thumbnails next to the photos and open in the same viewer.
+// While a list is empty, the card shows a small "VR video uskoro" badge instead.
+export const PROJECT_VIDEOS = {
+  kampus: [],       // Nautički kampus – obuka u jedrenju, simulator, učionica
+  skipper4you: [],  // Skipper4You – VR scenariji za skipere
+  leboat: [],       // Le Boat – 360° produkcija
+  wrc: [],          // WRC 2025 / Vatrogasna zajednica
+};
 
 export function getYouTubeId(value) {
   if (!value) return null;

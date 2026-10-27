@@ -1,12 +1,27 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink, Play, Video, X } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
 import { useT } from '../i18n';
+import { PROJECT_VIDEOS, getYouTubeId } from '../siteConfig';
 
-function Lightbox({ images, index, onClose, onNavigate, labels }) {
+/** Photos + YouTube videos of one project as a single list for the card and the viewer. */
+function buildMedia(project) {
+  const videos = (PROJECT_VIDEOS[project.id] || [])
+    .map((entry, i) => {
+      const id = getYouTubeId(typeof entry === 'string' ? entry : entry?.url);
+      if (!id) return null;
+      const title = (typeof entry === 'object' && entry.title) || `${project.title} – video ${i + 1}`;
+      return { type: 'video', id, alt: title, thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg` };
+    })
+    .filter(Boolean);
+  const images = project.images.map((img) => ({ type: 'image', ...img, thumb: img.thumb || img.src }));
+  return [...videos, ...images];
+}
+
+function Lightbox({ items, index, onClose, onNavigate, labels }) {
   const closeRef = useRef(null);
-  const image = images[index];
+  const item = items[index];
 
   useEffect(() => {
     const previous = document.activeElement;
@@ -26,17 +41,34 @@ function Lightbox({ images, index, onClose, onNavigate, labels }) {
   }, [onClose, onNavigate]);
 
   return createPortal(
-    <div className="lightbox" role="dialog" aria-modal="true" aria-label={image.alt} onClick={onClose}>
-      <figure className="lightbox__figure" onClick={(e) => e.stopPropagation()}>
-        <img src={image.src} alt={image.alt} className="lightbox__img" />
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={item.alt} onClick={onClose}>
+      <figure className={`lightbox__figure ${item.type === 'video' ? 'lightbox__figure--video' : ''}`} onClick={(e) => e.stopPropagation()}>
+        {item.type === 'video' ? (
+          <div className="lightbox__video">
+            <iframe
+              key={item.id}
+              src={`https://www.youtube-nocookie.com/embed/${item.id}?autoplay=1&rel=0&modestbranding=1`}
+              title={item.alt}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        ) : (
+          <img src={item.src} alt={item.alt} className="lightbox__img" />
+        )}
         <figcaption className="lightbox__caption">
-          {image.alt} <span className="lightbox__count">{index + 1} / {images.length}</span>
+          {item.alt} <span className="lightbox__count">{index + 1} / {items.length}</span>
+          {item.type === 'video' && (
+            <a className="lightbox__yt" href={`https://www.youtube.com/watch?v=${item.id}`} target="_blank" rel="noopener noreferrer">
+              <ExternalLink size={14} aria-hidden="true" /> {labels.watchOnYoutube}
+            </a>
+          )}
         </figcaption>
       </figure>
       <button ref={closeRef} type="button" className="lightbox__btn lightbox__close" onClick={onClose} aria-label={labels.close}>
         <X size={22} />
       </button>
-      {images.length > 1 && (
+      {items.length > 1 && (
         <>
           <button type="button" className="lightbox__btn lightbox__prev" onClick={(e) => { e.stopPropagation(); onNavigate(-1); }} aria-label={labels.prev}>
             <ChevronLeft size={26} />
@@ -53,22 +85,37 @@ function Lightbox({ images, index, onClose, onNavigate, labels }) {
 
 const MAX_THUMBS = 4;
 
-function ProjectCard({ project, onOpen, openLabel }) {
-  const thumbs = project.images.slice(0, MAX_THUMBS);
-  const hidden = project.images.length - thumbs.length;
+function ProjectCard({ project, media, onOpen, labels }) {
+  const thumbs = media.slice(0, MAX_THUMBS);
+  const hidden = media.length - thumbs.length;
+  const hasVideo = media.some((m) => m.type === 'video');
 
   return (
     <article className="card project">
       <div className="project__gallery">
-        {thumbs.map((img, i) => (
-          <button key={img.src} type="button" className="project__shot" onClick={() => onOpen(i)} aria-label={`${openLabel}: ${img.alt}`}>
-            <img src={img.src} alt="" loading="lazy" decoding="async" />
+        {thumbs.map((m, i) => (
+          <button
+            key={m.thumb}
+            type="button"
+            className="project__shot"
+            onClick={() => onOpen(i)}
+            aria-label={`${m.type === 'video' ? labels.openVideo : labels.openImage}: ${m.alt}`}
+          >
+            <img src={m.thumb} alt="" loading="lazy" decoding="async" />
+            {m.type === 'video' && (
+              <span className="project__play" aria-hidden="true"><Play size={18} fill="currentColor" /></span>
+            )}
             {i === thumbs.length - 1 && hidden > 0 && <span className="project__more" aria-hidden="true">+{hidden}</span>}
           </button>
         ))}
       </div>
       <div className="project__body">
-        <span className="project__tag">{project.tag}</span>
+        <div className="project__meta">
+          <span className="project__tag">{project.tag}</span>
+          {!hasVideo && (
+            <span className="project__soon"><Video size={13} aria-hidden="true" /> {labels.videoSoon}</span>
+          )}
+        </div>
         <h3 className="project__title">{project.title}</h3>
         <p className="project__text">{project.text}</p>
         <dl className="project__stats">
@@ -87,15 +134,16 @@ function ProjectCard({ project, onOpen, openLabel }) {
 export default function Projects() {
   const t = useT();
   const [open, setOpen] = useState(null); // { project, index }
+  const media = useMemo(() => t.projects.items.map(buildMedia), [t]);
 
   const close = useCallback(() => setOpen(null), []);
   const navigate = useCallback((step) => {
     setOpen((cur) => {
       if (!cur) return cur;
-      const count = t.projects.items[cur.project].images.length;
+      const count = media[cur.project].length;
       return { ...cur, index: (cur.index + step + count) % count };
     });
-  }, [t]);
+  }, [media]);
 
   return (
     <section id="projects" className="projects" aria-labelledby="projects-heading">
@@ -105,15 +153,15 @@ export default function Projects() {
         <p className="projects__intro">{t.projects.intro}</p>
         <div className="projects__grid">
           {t.projects.items.map((project, p) => (
-            <ScrollReveal key={p} delay={p * 100}>
-              <ProjectCard project={project} openLabel={t.projects.openImage} onOpen={(index) => setOpen({ project: p, index })} />
+            <ScrollReveal key={project.id} delay={(p % 2) * 100}>
+              <ProjectCard project={project} media={media[p]} labels={t.projects} onOpen={(index) => setOpen({ project: p, index })} />
             </ScrollReveal>
           ))}
         </div>
       </div>
       {open && (
         <Lightbox
-          images={t.projects.items[open.project].images}
+          items={media[open.project]}
           index={open.index}
           onClose={close}
           onNavigate={navigate}
@@ -165,6 +213,22 @@ export default function Projects() {
           .project__shot:hover img { transform: scale(1.05); }
         }
         .project__shot:focus-visible { outline: 2px solid var(--accent-teal); outline-offset: 2px; }
+        .project__play {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding-left: 2px;
+          border-radius: 50%;
+          color: #fff;
+          background: rgba(233, 30, 140, 0.92);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+          transform: translate(-50%, -50%);
+        }
         .project__more {
           position: absolute;
           inset: 0;
@@ -177,7 +241,7 @@ export default function Projects() {
           font-size: 1.125rem;
         }
         .project__body { padding: var(--space-lg) var(--space-xl) var(--space-xl); flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
-        .project__stats { align-self: stretch; }
+        .project__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm); }
         .project__tag {
           display: inline-block;
           padding: 2px 10px;
@@ -188,7 +252,14 @@ export default function Projects() {
           text-transform: uppercase;
           color: var(--accent-teal);
           background: color-mix(in srgb, var(--accent-teal) 10%, transparent);
-          margin-bottom: var(--space-sm);
+        }
+        .project__soon {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: var(--text-muted);
         }
         .project__title {
           font-size: 1.25rem;
@@ -205,6 +276,7 @@ export default function Projects() {
           flex: 1;
         }
         .project__stats {
+          align-self: stretch;
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
           gap: var(--space-sm);
@@ -231,7 +303,7 @@ export default function Projects() {
           background: var(--gradient-brand);
         }
         .project__stat-value {
-          font-size: 1.625rem;
+          font-size: 1.5rem;
           font-weight: 800;
           line-height: 1.1;
           letter-spacing: -0.02em;
@@ -248,6 +320,7 @@ export default function Projects() {
         }
         @media (max-width: 480px) {
           .project__body { padding: var(--space-md) var(--space-lg) var(--space-lg); }
+          .project__stat-value { font-size: 1.3rem; }
         }
 
         .lightbox {
@@ -263,6 +336,7 @@ export default function Projects() {
         }
         @keyframes lightboxIn { from { opacity: 0; } to { opacity: 1; } }
         .lightbox__figure { max-width: min(1100px, 100%); max-height: 100%; display: flex; flex-direction: column; gap: var(--space-sm); }
+        .lightbox__figure--video { width: min(1100px, 100%); }
         .lightbox__img {
           max-width: 100%;
           max-height: calc(100dvh - 9rem);
@@ -270,8 +344,28 @@ export default function Projects() {
           border-radius: var(--radius-md);
           margin-inline: auto;
         }
+        .lightbox__video {
+          position: relative;
+          width: 100%;
+          max-height: calc(100dvh - 10rem);
+          aspect-ratio: 16 / 9;
+          border-radius: var(--radius-md);
+          overflow: hidden;
+          background: #000;
+        }
+        .lightbox__video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
         .lightbox__caption { color: #e6edf3; font-size: var(--text-small); text-align: center; }
         .lightbox__count { color: #9cadbc; margin-left: var(--space-sm); white-space: nowrap; }
+        .lightbox__yt {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          margin-left: var(--space-md);
+          color: #00c9d4;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+        .lightbox__yt:hover { text-decoration: underline; }
         .lightbox__btn {
           position: absolute;
           width: 44px;
@@ -291,6 +385,7 @@ export default function Projects() {
         .lightbox__next { right: var(--space-md); top: 50%; transform: translateY(-50%); }
         @media (max-width: 640px) {
           .lightbox__prev, .lightbox__next { top: auto; bottom: var(--space-md); transform: none; }
+          .lightbox__yt { display: flex; justify-content: center; margin: var(--space-xs) 0 0; }
         }
       `}</style>
     </section>

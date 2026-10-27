@@ -6,7 +6,6 @@ import About from './About';
 import VRClassroom from './VRClassroom';
 import Applications from './Applications';
 import Projects from './Projects';
-import Videos from './Videos';
 import TrainingHubs from './TrainingHubs';
 import Technology from './Technology';
 import Benefits from './Benefits';
@@ -23,7 +22,6 @@ export default function PageSections({ onRequestDemo }) {
       <ScrollReveal><VRClassroom /></ScrollReveal>
       <ScrollReveal><Applications /></ScrollReveal>
       <ScrollReveal><Projects /></ScrollReveal>
-      <ScrollReveal><Videos /></ScrollReveal>
       <ScrollReveal><TrainingHubs onRequestDemo={onRequestDemo} /></ScrollReveal>
       <ScrollReveal><Technology /></ScrollReveal>
       <ScrollReveal><Benefits /></ScrollReveal>
