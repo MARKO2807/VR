@@ -118,7 +118,7 @@ function ProjectCard({ project, media, onOpen, labels }) {
         </div>
         <h3 className="project__title">{project.title}</h3>
         <p className="project__text">{project.text}</p>
-        <dl className="project__stats">
+        <dl className="project__stats" data-count={project.stats.length}>
           {project.stats.map((s) => (
             <div key={s.label} className="project__stat">
               <dt className="project__stat-value">{s.value}</dt>
@@ -280,6 +280,19 @@ export default function Projects() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
           gap: var(--space-sm);
+        }
+        /* Phones: 4 tiles as 2×2; 2–3 tiles as a compact list (number + label per row) */
+        @media (max-width: 520px) {
+          .project__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+          .project__stats:not([data-count="4"]) { grid-template-columns: 1fr; }
+          .project__stats:not([data-count="4"]) .project__stat {
+            flex-direction: row;
+            align-items: baseline;
+            gap: var(--space-md);
+            padding: 10px 14px;
+          }
+          .project__stats:not([data-count="4"]) .project__stat::before { top: 50%; left: 0; width: 3px; height: 20px; border-radius: 0 3px 3px 0; transform: translateY(-50%); }
+          .project__stats:not([data-count="4"]) .project__stat-value { min-width: 5.2em; font-size: 1.25rem; }
         }
         .project__stat {
           position: relative;
