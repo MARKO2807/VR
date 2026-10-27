@@ -146,6 +146,14 @@ export default function Header({ onRequestDemo }) {
           border: 1px solid transparent;
           background: transparent;
           transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+          animation: headerIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes headerIn {
+          from { opacity: 0; transform: translateY(-14px); }
+          to { opacity: 1; transform: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .header__bar { animation: none; }
         }
         .header__bar--solid {
           background: var(--header-bg);
@@ -252,6 +260,8 @@ export default function Header({ onRequestDemo }) {
         }
         @media (max-width: 360px) {
           .header__logo { height: 26px; }
+          .header__actions { gap: 4px; }
+          .header__menu-btn { width: 40px; }
         }
       `}</style>
     </header>

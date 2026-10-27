@@ -183,7 +183,28 @@ ul, ol {
   text-transform: uppercase;
   color: var(--accent-magenta);
   margin-bottom: var(--space-md);
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Small gradient accent that draws in when its section scrolls into view */
+.section-label::before {
+  content: "";
+  flex-shrink: 0;
+  width: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gradient-brand);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+}
+.scroll-reveal--visible .section-label::before { transform: scaleX(1); }
+.final-cta .section-label,
+.benefits__container .section-label { justify-content: center; }
+@media (prefers-reduced-motion: reduce) {
+  .section-label::before { transform: none; transition: none; }
 }
 
 .section-title {

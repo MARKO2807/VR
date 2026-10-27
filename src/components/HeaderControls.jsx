@@ -77,6 +77,15 @@ export default function HeaderControls() {
           transition: background var(--transition-fast), color var(--transition-fast);
         }
         .header-controls__lang-btn:hover { color: var(--text-primary); }
+        @media (pointer: coarse) {
+          .header-controls__lang-btn { height: 36px; min-width: 40px; }
+          .header-controls__theme { width: 42px; height: 42px; }
+        }
+        @media (max-width: 360px) {
+          .header-controls { gap: 4px; }
+          .header-controls__lang-btn { min-width: 34px; padding: 0 6px; }
+          .header-controls__theme { width: 38px; height: 38px; }
+        }
         .header-controls__lang-btn.is-active {
           background: var(--bg-card);
           color: var(--text-primary);

@@ -71,13 +71,40 @@ export default function Hero({ onRequestDemo }) {
         }
         .hero__title-highlight {
           background: var(--gradient-brand);
+          background-size: 100% 100%;
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
+          animation: heroColorFlow 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
         }
         @keyframes heroReveal {
           from { opacity: 0; transform: translateY(0.5em); }
           to { opacity: 1; transform: none; }
+        }
+        /* Brand gradient "flows" into the highlighted words: starts zoomed on the teal end, settles on the full gradient */
+        @keyframes heroColorFlow {
+          from { background-size: 400% 100%; background-position: 0% 50%; }
+          to { background-size: 100% 100%; background-position: 0% 50%; }
+        }
+        /* Staggered entrance for copy, buttons and image */
+        .hero__subtitle, .hero__supporting, .hero__ctas {
+          animation: heroReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .hero__subtitle { animation-delay: 0.12s; }
+        .hero__supporting { animation-delay: 0.22s; }
+        .hero__ctas { animation-delay: 0.32s; }
+        .hero__frame { animation: heroFrameIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
+        .hero__img { animation: heroImgIn 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both; }
+        @keyframes heroFrameIn {
+          from { opacity: 0; transform: translateY(18px) scale(0.97); }
+          to { opacity: 1; transform: none; }
+        }
+        @keyframes heroImgIn {
+          from { clip-path: inset(0 0 100% 0); transform: scale(1.12); }
+          to { clip-path: inset(0 0 0 0); transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero__title, .hero__title-highlight, .hero__subtitle, .hero__supporting, .hero__ctas, .hero__frame, .hero__img { animation: none; }
         }
         .hero__bento {
           display: grid;

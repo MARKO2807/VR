@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, ExternalLink, Play, Video, X } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
+import CountUp from './CountUp';
 import { useT } from '../i18n';
 import { PROJECT_VIDEOS, getYouTubeId } from '../siteConfig';
 
@@ -121,7 +122,7 @@ function ProjectCard({ project, media, onOpen, labels }) {
         <dl className="project__stats" data-count={project.stats.length}>
           {project.stats.map((s) => (
             <div key={s.label} className="project__stat">
-              <dt className="project__stat-value">{s.value}</dt>
+              <CountUp as="dt" className="project__stat-value" value={s.value} />
               <dd className="project__stat-label">{s.label}</dd>
             </div>
           ))}
@@ -320,6 +321,7 @@ export default function Projects() {
           font-weight: 800;
           line-height: 1.1;
           letter-spacing: -0.02em;
+          font-variant-numeric: tabular-nums;
           white-space: nowrap;
           background: var(--gradient-brand);
           -webkit-background-clip: text;
