@@ -111,13 +111,10 @@ const en = {
     label: 'Projects',
     title: 'VR training in action',
     intro: 'Projects where VR Classroom4You is already in use – from sailing to firefighting.',
-    openImage: 'Open photo',
     openVideo: 'Play video',
     videoSoon: 'VR video coming soon',
+    videoSoonText: 'Footage from this project will be available here soon.',
     watchOnYoutube: 'Open on YouTube (also on VR headsets)',
-    close: 'Close',
-    prev: 'Previous',
-    next: 'Next',
     items: [
       {
         id: 'kampus',

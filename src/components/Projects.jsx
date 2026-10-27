@@ -1,122 +1,73 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { ChevronLeft, ChevronRight, ExternalLink, Play, Video, X } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { ExternalLink, Play } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
 import CountUp from './CountUp';
 import { useT } from '../i18n';
 import { PROJECT_VIDEOS, getYouTubeId } from '../siteConfig';
 
-/** Photos + YouTube videos of one project as a single list for the card and the viewer. */
-function buildMedia(project) {
-  const videos = (PROJECT_VIDEOS[project.id] || [])
+/** YouTube videos configured for a project in src/siteConfig.js (PROJECT_VIDEOS). */
+function projectVideos(project) {
+  return (PROJECT_VIDEOS[project.id] || [])
     .map((entry, i) => {
       const id = getYouTubeId(typeof entry === 'string' ? entry : entry?.url);
       if (!id) return null;
       const title = (typeof entry === 'object' && entry.title) || `${project.title} – video ${i + 1}`;
-      return { type: 'video', id, alt: title, thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg` };
+      return { id, title };
     })
     .filter(Boolean);
-  const images = project.images.map((img) => ({ type: 'image', ...img, thumb: img.thumb || img.src }));
-  return [...videos, ...images];
 }
 
-function Lightbox({ items, index, onClose, onNavigate, labels }) {
-  const closeRef = useRef(null);
-  const item = items[index];
-
-  useEffect(() => {
-    const previous = document.activeElement;
-    closeRef.current?.focus();
-    document.body.style.overflow = 'hidden';
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') onNavigate(1);
-      if (e.key === 'ArrowLeft') onNavigate(-1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
-      previous?.focus?.();
-    };
-  }, [onClose, onNavigate]);
-
-  return createPortal(
-    <div className="lightbox" role="dialog" aria-modal="true" aria-label={item.alt} onClick={onClose}>
-      <figure className={`lightbox__figure ${item.type === 'video' ? 'lightbox__figure--video' : ''}`} onClick={(e) => e.stopPropagation()}>
-        {item.type === 'video' ? (
-          <div className="lightbox__video">
-            <iframe
-              key={item.id}
-              src={`https://www.youtube-nocookie.com/embed/${item.id}?autoplay=1&rel=0&modestbranding=1`}
-              title={item.alt}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
+/**
+ * Click-to-load YouTube player: shows the video thumbnail until played,
+ * so no YouTube scripts or cookies load until someone presses play (youtube-nocookie.com).
+ */
+function VideoPlayer({ video, labels }) {
+  const [playing, setPlaying] = useState(false);
+  return (
+    <div className="project-video">
+      <div className="project-video__frame">
+        {playing ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&modestbranding=1`}
+            title={video.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
         ) : (
-          <img src={item.src} alt={item.alt} className="lightbox__img" />
+          <button type="button" className="project-video__poster" onClick={() => setPlaying(true)} aria-label={`${labels.openVideo}: ${video.title}`}>
+            <img src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" />
+            <span className="project-video__play" aria-hidden="true"><Play size={24} fill="currentColor" /></span>
+          </button>
         )}
-        <figcaption className="lightbox__caption">
-          {item.alt} <span className="lightbox__count">{index + 1} / {items.length}</span>
-          {item.type === 'video' && (
-            <a className="lightbox__yt" href={`https://www.youtube.com/watch?v=${item.id}`} target="_blank" rel="noopener noreferrer">
-              <ExternalLink size={14} aria-hidden="true" /> {labels.watchOnYoutube}
-            </a>
-          )}
-        </figcaption>
-      </figure>
-      <button ref={closeRef} type="button" className="lightbox__btn lightbox__close" onClick={onClose} aria-label={labels.close}>
-        <X size={22} />
-      </button>
-      {items.length > 1 && (
-        <>
-          <button type="button" className="lightbox__btn lightbox__prev" onClick={(e) => { e.stopPropagation(); onNavigate(-1); }} aria-label={labels.prev}>
-            <ChevronLeft size={26} />
-          </button>
-          <button type="button" className="lightbox__btn lightbox__next" onClick={(e) => { e.stopPropagation(); onNavigate(1); }} aria-label={labels.next}>
-            <ChevronRight size={26} />
-          </button>
-        </>
-      )}
-    </div>,
-    document.body
+      </div>
+      <a className="project-video__yt" href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer">
+        <ExternalLink size={13} aria-hidden="true" /> {labels.watchOnYoutube}
+      </a>
+    </div>
   );
 }
 
-const MAX_THUMBS = 4;
-
-function ProjectCard({ project, media, onOpen, labels }) {
-  const thumbs = media.slice(0, MAX_THUMBS);
-  const hidden = media.length - thumbs.length;
-  const hasVideo = media.some((m) => m.type === 'video');
+function ProjectCard({ project, videos, labels }) {
+  const photos = project.images.slice(0, 4);
 
   return (
     <article className="card project">
-      <div className="project__gallery">
-        {thumbs.map((m, i) => (
-          <button
-            key={m.thumb}
-            type="button"
-            className="project__shot"
-            onClick={() => onOpen(i)}
-            aria-label={`${m.type === 'video' ? labels.openVideo : labels.openImage}: ${m.alt}`}
-          >
-            <img src={m.thumb} alt="" loading="lazy" decoding="async" />
-            {m.type === 'video' && (
-              <span className="project__play" aria-hidden="true"><Play size={18} fill="currentColor" /></span>
-            )}
-            {i === thumbs.length - 1 && hidden > 0 && <span className="project__more" aria-hidden="true">+{hidden}</span>}
-          </button>
+      <div className="project__photos">
+        {photos.map((img) => (
+          <figure key={img.src} className="project__photo">
+            <img
+              src={img.src}
+              srcSet={img.thumb ? `${img.thumb} 480w, ${img.src} 1600w` : undefined}
+              sizes="(max-width: 520px) 46vw, (max-width: 960px) 45vw, 300px"
+              alt={img.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
         ))}
       </div>
       <div className="project__body">
-        <div className="project__meta">
-          <span className="project__tag">{project.tag}</span>
-          {!hasVideo && (
-            <span className="project__soon"><Video size={13} aria-hidden="true" /> {labels.videoSoon}</span>
-          )}
-        </div>
+        <span className="project__tag">{project.tag}</span>
         <h3 className="project__title">{project.title}</h3>
         <p className="project__text">{project.text}</p>
         <dl className="project__stats" data-count={project.stats.length}>
@@ -127,6 +78,19 @@ function ProjectCard({ project, media, onOpen, labels }) {
             </div>
           ))}
         </dl>
+        <div className="project__videos">
+          {videos.length > 0 ? (
+            videos.map((v) => <VideoPlayer key={v.id} video={v} labels={labels} />)
+          ) : (
+            <div className="project__video-soon">
+              <span className="project__video-soon-icon" aria-hidden="true"><Play size={16} fill="currentColor" /></span>
+              <span>
+                <strong>{labels.videoSoon}</strong>
+                <span className="project__video-soon-text">{labels.videoSoonText}</span>
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </article>
   );
@@ -134,17 +98,7 @@ function ProjectCard({ project, media, onOpen, labels }) {
 
 export default function Projects() {
   const t = useT();
-  const [open, setOpen] = useState(null); // { project, index }
-  const media = useMemo(() => t.projects.items.map(buildMedia), [t]);
-
-  const close = useCallback(() => setOpen(null), []);
-  const navigate = useCallback((step) => {
-    setOpen((cur) => {
-      if (!cur) return cur;
-      const count = media[cur.project].length;
-      return { ...cur, index: (cur.index + step + count) % count };
-    });
-  }, [media]);
+  const videos = useMemo(() => t.projects.items.map(projectVideos), [t]);
 
   return (
     <section id="projects" className="projects" aria-labelledby="projects-heading">
@@ -155,20 +109,11 @@ export default function Projects() {
         <div className="projects__grid">
           {t.projects.items.map((project, p) => (
             <ScrollReveal key={project.id} delay={(p % 2) * 100}>
-              <ProjectCard project={project} media={media[p]} labels={t.projects} onOpen={(index) => setOpen({ project: p, index })} />
+              <ProjectCard project={project} videos={videos[p]} labels={t.projects} />
             </ScrollReveal>
           ))}
         </div>
       </div>
-      {open && (
-        <Lightbox
-          items={media[open.project]}
-          index={open.index}
-          onClose={close}
-          onNavigate={navigate}
-          labels={t.projects}
-        />
-      )}
       <style>{`
         .projects { padding: var(--section-padding-y) 0; background: var(--bg-secondary); }
         .projects__intro {
@@ -190,59 +135,32 @@ export default function Projects() {
           flex-direction: column;
         }
         .project:hover { transform: none; }
-        .project__gallery {
+
+        /* 2×2 photo grid (not clickable) */
+        .project__photos {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 4px;
-          padding: 4px;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 6px;
+          padding: 6px;
         }
-        .project__shot {
-          position: relative;
-          display: block;
+        .project__photo {
+          margin: 0;
           overflow: hidden;
           border-radius: calc(var(--radius-lg) - 6px);
           aspect-ratio: 4 / 3;
           background: var(--bg-secondary);
         }
-        .project__shot img {
+        .project__photo img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.4s ease;
+          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
         @media (hover: hover) {
-          .project__shot:hover img { transform: scale(1.05); }
+          .project__photo:hover img { transform: scale(1.04); }
         }
-        .project__shot:focus-visible { outline: 2px solid var(--accent-teal); outline-offset: 2px; }
-        .project__play {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding-left: 2px;
-          border-radius: 50%;
-          color: #fff;
-          background: rgba(233, 30, 140, 0.92);
-          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-          transform: translate(-50%, -50%);
-        }
-        .project__more {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(11, 26, 42, 0.55);
-          color: #fff;
-          font-weight: 700;
-          font-size: 1.125rem;
-        }
+
         .project__body { padding: var(--space-lg) var(--space-xl) var(--space-xl); flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
-        .project__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-sm); }
         .project__tag {
           display: inline-block;
           padding: 2px 10px;
@@ -253,14 +171,7 @@ export default function Projects() {
           text-transform: uppercase;
           color: var(--accent-teal);
           background: color-mix(in srgb, var(--accent-teal) 10%, transparent);
-        }
-        .project__soon {
-          display: inline-flex;
-          align-items: center;
-          gap: 5px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          color: var(--text-muted);
+          margin-bottom: var(--space-sm);
         }
         .project__title {
           font-size: 1.25rem;
@@ -333,74 +244,91 @@ export default function Projects() {
           line-height: 1.3;
           color: var(--text-secondary);
         }
-        @media (max-width: 480px) {
-          .project__body { padding: var(--space-md) var(--space-lg) var(--space-lg); }
-          .project__stat-value { font-size: 1.3rem; }
-        }
 
-        .lightbox {
-          position: fixed;
-          inset: 0;
-          z-index: 1000;
+        /* Videos: inline players, or a placeholder until links are added */
+        .project__videos {
+          align-self: stretch;
+          display: grid;
+          gap: var(--space-md);
+          margin-top: var(--space-md);
+        }
+        .project__video-soon {
+          display: flex;
+          align-items: center;
+          gap: var(--space-md);
+          padding: 12px 16px;
+          border-radius: 14px;
+          border: 1px dashed color-mix(in srgb, var(--accent-teal) 40%, transparent);
+          background: linear-gradient(110deg,
+            color-mix(in srgb, var(--accent-teal) 6%, transparent),
+            color-mix(in srgb, var(--accent-magenta) 6%, transparent));
+          font-size: 0.8125rem;
+          line-height: 1.35;
+          color: var(--text-secondary);
+        }
+        .project__video-soon strong { display: block; color: var(--text-primary); font-size: 0.875rem; }
+        .project__video-soon-text { display: block; }
+        .project__video-soon-icon {
+          flex-shrink: 0;
+          width: 38px;
+          height: 38px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding-left: 2px;
+          border-radius: 50%;
+          color: #fff;
+          background: var(--gradient-brand);
+          opacity: 0.85;
+        }
+        .project-video__frame {
+          position: relative;
+          aspect-ratio: 16 / 9;
+          border-radius: 14px;
+          overflow: hidden;
+          background: #0a0f19;
+        }
+        .project-video__frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .project-video__poster { position: absolute; inset: 0; width: 100%; display: block; }
+        .project-video__poster img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .project-video__poster::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(5, 10, 18, 0.5)); }
+        @media (hover: hover) {
+          .project-video__poster:hover img { transform: scale(1.04); }
+          .project-video__poster:hover .project-video__play { transform: translate(-50%, -50%) scale(1.08); }
+        }
+        .project-video__poster:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: -3px; }
+        .project-video__play {
+          position: absolute;
+          z-index: 1;
+          top: 50%;
+          left: 50%;
+          width: 60px;
+          height: 60px;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: clamp(1rem, 5vw, 4rem);
-          background: rgba(5, 10, 18, 0.92);
-          animation: lightboxIn 0.2s ease;
+          padding-left: 4px;
+          border-radius: 50%;
+          color: #fff;
+          background: rgba(233, 30, 140, 0.92);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+          transform: translate(-50%, -50%);
+          transition: transform var(--transition-fast);
         }
-        @keyframes lightboxIn { from { opacity: 0; } to { opacity: 1; } }
-        .lightbox__figure { max-width: min(1100px, 100%); max-height: 100%; display: flex; flex-direction: column; gap: var(--space-sm); }
-        .lightbox__figure--video { width: min(1100px, 100%); }
-        .lightbox__img {
-          max-width: 100%;
-          max-height: calc(100dvh - 9rem);
-          object-fit: contain;
-          border-radius: var(--radius-md);
-          margin-inline: auto;
-        }
-        .lightbox__video {
-          position: relative;
-          width: 100%;
-          max-height: calc(100dvh - 10rem);
-          aspect-ratio: 16 / 9;
-          border-radius: var(--radius-md);
-          overflow: hidden;
-          background: #000;
-        }
-        .lightbox__video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-        .lightbox__caption { color: #e6edf3; font-size: var(--text-small); text-align: center; }
-        .lightbox__count { color: #9cadbc; margin-left: var(--space-sm); white-space: nowrap; }
-        .lightbox__yt {
+        .project-video__yt {
           display: inline-flex;
           align-items: center;
           gap: 5px;
-          margin-left: var(--space-md);
-          color: #00c9d4;
+          margin-top: 6px;
+          font-size: 0.8125rem;
           font-weight: 600;
-          white-space: nowrap;
+          color: var(--accent-teal);
         }
-        .lightbox__yt:hover { text-decoration: underline; }
-        .lightbox__btn {
-          position: absolute;
-          width: 44px;
-          height: 44px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          color: #fff;
-          background: rgba(255, 255, 255, 0.12);
-          transition: background var(--transition-fast);
-        }
-        .lightbox__btn:hover { background: rgba(255, 255, 255, 0.24); }
-        .lightbox__btn:focus-visible { outline: 2px solid #00c9d4; outline-offset: 2px; }
-        .lightbox__close { top: var(--space-md); right: var(--space-md); }
-        .lightbox__prev { left: var(--space-md); top: 50%; transform: translateY(-50%); }
-        .lightbox__next { right: var(--space-md); top: 50%; transform: translateY(-50%); }
-        @media (max-width: 640px) {
-          .lightbox__prev, .lightbox__next { top: auto; bottom: var(--space-md); transform: none; }
-          .lightbox__yt { display: flex; justify-content: center; margin: var(--space-xs) 0 0; }
+        .project-video__yt:hover { text-decoration: underline; }
+
+        @media (max-width: 480px) {
+          .project__body { padding: var(--space-md) var(--space-lg) var(--space-lg); }
+          .project__photos { gap: 4px; padding: 4px; }
         }
       `}</style>
     </section>

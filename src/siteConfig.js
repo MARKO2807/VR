@@ -12,8 +12,9 @@ export const COMPANY = {
 
 // YouTube videos shown inside each project card (section "Projekti").
 // Add as many as you like – paste full YouTube links (watch?v=…, youtu.be/…, shorts/…) or just the ID.
-// They appear as play thumbnails next to the photos and open in the same viewer.
-// While a list is empty, the card shows a small "VR video uskoro" badge instead.
+// Each video appears as a 16:9 player inside its project card (loads only when someone presses play).
+// While a list is empty, the card shows a "VR video uskoro" placeholder instead.
+// Example: leboat: ['https://youtu.be/XXXXXXXXXXX', 'https://www.youtube.com/watch?v=YYYYYYYYYYY'],
 export const PROJECT_VIDEOS = {
   kampus: [],       // Nautički kampus – obuka u jedrenju, simulator, učionica
   skipper4you: [],  // Skipper4You – VR scenariji za skipere

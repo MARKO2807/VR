@@ -111,13 +111,10 @@ const hr = {
     label: 'Projekti',
     title: 'VR obuka u primjeni',
     intro: 'Projekti u kojima se VR Classroom4You već koristi – od nautike do vatrogastva.',
-    openImage: 'Otvori fotografiju',
     openVideo: 'Pokreni video',
     videoSoon: 'VR video uskoro',
+    videoSoonText: 'Snimke s projekta uskoro će biti dostupne ovdje.',
     watchOnYoutube: 'Otvori na YouTubeu (i na VR naočalama)',
-    close: 'Zatvori',
-    prev: 'Prethodno',
-    next: 'Sljedeće',
     items: [
       {
         id: 'kampus',

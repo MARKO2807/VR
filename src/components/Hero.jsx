@@ -6,13 +6,18 @@ import { useT } from '../i18n';
 export default function Hero({ onRequestDemo }) {
   const t = useT();
   const tilt = useTilt();
+  const words = t.hero.titleStart.split(' ');
 
   return (
     <section id="hero" className="hero" aria-labelledby="hero-heading">
       <div className="container hero__container">
-        <h1 id="hero-heading" className="hero__title">
-          {t.hero.titleStart}{' '}
-          <span className="hero__title-highlight">{t.hero.titleHighlight}</span>
+        <h1 id="hero-heading" className="hero__title" key={t.hero.titleStart}>
+          {words.map((w, i) => (
+            <React.Fragment key={i}>
+              <span className="hero__word" style={{ '--i': i }}>{w}</span>{' '}
+            </React.Fragment>
+          ))}
+          <span className="hero__title-highlight" style={{ '--i': words.length }}>{t.hero.titleHighlight}</span>
         </h1>
         <div className="hero__bento">
           <div className="hero__copy">
@@ -67,24 +72,41 @@ export default function Hero({ onRequestDemo }) {
           letter-spacing: -0.02em;
           color: var(--text-primary);
           max-width: 20ch;
-          animation: heroReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
+        /* Words rise in one by one, sharpening from a soft blur */
+        .hero__word {
+          display: inline-block;
+          animation: heroWord 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation-delay: calc(var(--i) * 70ms);
+        }
+        @keyframes heroWord {
+          from { opacity: 0; transform: translateY(0.45em); filter: blur(8px); }
+          to { opacity: 1; transform: none; filter: blur(0); }
+        }
+        /* Highlight fades in last, then its brand gradient keeps flowing slowly */
         .hero__title-highlight {
-          background: var(--gradient-brand);
-          background-size: 100% 100%;
+          background: linear-gradient(90deg, var(--accent-teal), var(--accent-magenta), var(--accent-teal));
+          background-size: 200% 100%;
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: heroColorFlow 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+          -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
+          animation:
+            heroHighlightIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 70ms) both,
+            heroFlow 7s ease-in-out calc(var(--i) * 70ms + 1.1s) infinite alternate;
+        }
+        @keyframes heroHighlightIn {
+          from { opacity: 0; filter: blur(10px); }
+          to { opacity: 1; filter: blur(0); }
+        }
+        @keyframes heroFlow {
+          from { background-position: 0% 50%; }
+          to { background-position: 100% 50%; }
         }
         @keyframes heroReveal {
           from { opacity: 0; transform: translateY(0.5em); }
           to { opacity: 1; transform: none; }
-        }
-        /* Brand gradient "flows" into the highlighted words: starts zoomed on the teal end, settles on the full gradient */
-        @keyframes heroColorFlow {
-          from { background-size: 400% 100%; background-position: 0% 50%; }
-          to { background-size: 100% 100%; background-position: 0% 50%; }
         }
         /* Staggered entrance for copy, buttons and image */
         .hero__subtitle, .hero__supporting, .hero__ctas {
@@ -104,7 +126,7 @@ export default function Hero({ onRequestDemo }) {
           to { clip-path: inset(0 0 0 0); transform: scale(1); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .hero__title, .hero__title-highlight, .hero__subtitle, .hero__supporting, .hero__ctas, .hero__frame, .hero__img { animation: none; }
+          .hero__title, .hero__word, .hero__title-highlight, .hero__subtitle, .hero__supporting, .hero__ctas, .hero__frame, .hero__img { animation: none; }
         }
         .hero__bento {
           display: grid;
