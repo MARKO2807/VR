@@ -21,7 +21,7 @@ export default function Hero({ onRequestDemo }) {
             </p>
             <p className="hero__supporting">{t.hero.supporting}</p>
             <div className="hero__ctas">
-              <MagneticButton type="button" className="btn btn-primary" onClick={onRequestDemo}>
+              <MagneticButton type="button" className="btn btn-primary btn-pulse" onClick={onRequestDemo}>
                 {t.common.requestDemo}
               </MagneticButton>
               <MagneticButton as="a" href="#platform" className="btn btn-secondary">

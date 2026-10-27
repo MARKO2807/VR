@@ -251,6 +251,39 @@ ul, ol {
   box-shadow: var(--shadow-button-hover);
 }
 
+/* CTA life: a soft light "scan" sweeps across primary buttons every few seconds (faster on hover) */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.38) 50%, transparent 70%);
+  transform: translateX(-130%);
+  animation: btnScan 5s cubic-bezier(0.4, 0, 0.2, 1) 1.8s infinite;
+  pointer-events: none;
+}
+.btn-primary:hover::after { animation-duration: 1.4s; animation-delay: 0s; }
+@keyframes btnScan {
+  0% { transform: translateX(-130%); }
+  30%, 100% { transform: translateX(130%); }
+}
+
+/* Main CTAs (hero + final): gentle radiating pulse ring */
+.btn-pulse { animation: btnPulse 2.8s ease-out 1.6s infinite; }
+.btn-pulse:hover { animation-play-state: paused; }
+@keyframes btnPulse {
+  0% { box-shadow: var(--shadow-button), 0 0 0 0 color-mix(in srgb, var(--accent-teal) 45%, transparent); }
+  70%, 100% { box-shadow: var(--shadow-button), 0 0 0 14px color-mix(in srgb, var(--accent-teal) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary::after, .btn-pulse { animation: none; }
+}
+
 .btn-secondary {
   background: transparent;
   color: var(--accent-teal);

@@ -12,7 +12,7 @@ export default function FinalCTA({ onRequestDemo }) {
           <span className="section-label">{t.finalCta.label}</span>
           <h2 id="final-cta-heading" className="final-cta__title">{t.finalCta.title}</h2>
           <p className="final-cta__text">{t.finalCta.text}</p>
-          <MagneticButton type="button" className="btn btn-primary final-cta__btn" onClick={onRequestDemo}>
+          <MagneticButton type="button" className="btn btn-primary btn-pulse final-cta__btn" onClick={onRequestDemo}>
             {t.common.requestDemo}
           </MagneticButton>
           <p className="final-cta__hint">{t.finalCta.hint}</p>
